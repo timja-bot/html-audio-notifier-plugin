@@ -1,0 +1,7 @@
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler">
+	<st:bind var="plugin" value="${app.getPlugin('html-audio-notifier')}" />
+	<script type="text/javascript" src="${request.contextPath}/plugin/html-audio-notifier/client" />
+	<script type="text/javascript">
+		poll(plugin);	
+	</script>
+</j:jelly>
