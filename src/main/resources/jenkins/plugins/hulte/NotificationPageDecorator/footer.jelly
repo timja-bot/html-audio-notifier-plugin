@@ -1,0 +1,11 @@
+<j:jelly xmlns:j="jelly:core">
+	<table width="100%">
+		<tr>
+			<td id="footer">
+				<span style="padding-right:2em; color:gray">
+				  TODO Play sounds true/false
+		        </span>
+		    </td>
+    	</tr>
+    </table>	
+</j:jelly>
