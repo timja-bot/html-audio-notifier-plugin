@@ -1,23 +1,25 @@
 
-	- cleanup
-	
-	- eclipse-warnings
-	
-	- tab/space
-	
-	- naming, jenkins.plugins.hulte.html-audio-notifier?
-
-	- What's the point of the Plugin-class? do we need it for the javascript-callbacks?
+	- What's the point of the Plugin-class? is it required for the js-callbacks?
+		- could maybe the RunListener be the 'main' class?
 	
 	- plugin's global.jelly enable/disable sounds by default .. checkbox
+	
+	- client.jelly can probably be converted to plain javascript in src/main/webapp
+		- create a more generic audio-player? that can be used from the config-pages to test sounds as well?
 	 
 	- GlobalBuildListener in a top-level class?
+	
 	- basic config, sounds for failed, failed-again, success-after-failure?
+	
 	- html page for sounds, or maybe embed in the main-page w/ off/on controls? maybe http://xxxxx?simpleSoundNotifier=on
 
 	- pom-TODO's	
 	- README
 	- config/help etc
+	
+	- license-information in the descriptor-files?
+		- tango icons
+		- wav files...
 
 	
 	- jenkins-plugin, simple-sound-notifier
