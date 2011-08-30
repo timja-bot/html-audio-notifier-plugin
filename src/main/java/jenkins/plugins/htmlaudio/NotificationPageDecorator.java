@@ -1,4 +1,4 @@
-package jenkins.plugins.hulte;
+package jenkins.plugins.htmlaudio;
 
 import hudson.Extension;
 import hudson.model.PageDecorator;

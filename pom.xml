@@ -6,8 +6,8 @@
     <version>1.427</version>
   </parent>
 
-  <groupId>jenkins.plugins.hulte</groupId>
-  <artifactId>simple-sound-notifier</artifactId>
+  <groupId>jenkins.plugins.htmlaudio</groupId>
+  <artifactId>html-audio-notifier</artifactId>
   <version>0.1-SNAPSHOT</version>
   <packaging>hpi</packaging>
 
@@ -39,3 +39,4 @@
     </plugins>
   </build>
 </project>
+
