@@ -1,4 +1,13 @@
 
+	- footer.jelly
+		- controls, change image via css-class
+		- toggle instead of disable on click
+		- maybe some text helping text as well?
+		- htmlAudioNotifierControl isn't created yet when the script runs the first time
+			- could we start the logic after the control has been created?
+			
+	- complete up the client/player javascript 
+
 	- What's the point of the Plugin-class? is it required for the js-callbacks?
 		- could maybe the RunListener be the 'main' class?
 	
@@ -14,12 +23,19 @@
 	- html page for sounds, or maybe embed in the main-page w/ off/on controls? maybe http://xxxxx?simpleSoundNotifier=on
 
 	- pom-TODO's	
+		- new jenkins-versions / name & description (displayed in the installed plugins page..)
 	- README
 	- config/help etc
+		- per field help/doc
+		    <f:entry ...
+		      help="/plugin/simple-sound-notifier/help-xx.html">
+	
 	
 	- license-information in the descriptor-files?
 		- tango icons
 		- wav files...
+		
+	- remove the bin-launchers, maybe put some more documentation regarding the basic plugin-dev into README?
 
 	
 	- jenkins-plugin, simple-sound-notifier

@@ -2,11 +2,12 @@
 	<table width="100%">
 		<tr>
 			<td id="footer">
-				<img src="${request.contextPath}/plugin/html-audio-notifier/images/audio-volume-high.png" />
-				<span style="padding-right:2em; color:gray">
-				  TODO Play sounds true/false
-		        </span>
+				<img id="htmlAudioNotifierControl"
+				  onclick="disableHtmlAudioClient();" /> <!-- TODO toggle, tooltips etc.. -->
 		    </td>
     	</tr>
-    </table>	
+    </table>
+    <script type="text/javascript">
+		initializeHtmlAudioClient(htmlAudioNotifier);
+	</script>
 </j:jelly>
