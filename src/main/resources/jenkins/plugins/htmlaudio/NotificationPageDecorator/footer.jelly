@@ -1,12 +1,11 @@
 <j:jelly xmlns:j="jelly:core">
-	<table width="100%">
-		<tr>
-			<td id="footer">
-				<img id="htmlAudioNotifierControl"
-				  onclick="disableHtmlAudioClient();" /> <!-- TODO toggle, tooltips etc.. -->
-		    </td>
-    	</tr>
-    </table>
+	
+	<div id="htmlAudioNotifierPanel">
+		<a href="#" onclick="toggleHtmlAudioClient(); return false;">
+			<div id="htmlAudioNotifierControl" class="disabled">Toggle audio notifications</div>
+		</a>
+	</div>
+	
     <script type="text/javascript">
 		initializeHtmlAudioClient(htmlAudioNotifier);
 	</script>

@@ -19,6 +19,13 @@ import hudson.model.Descriptor;
  */
 public final class HtmlAudioNotifier extends Plugin implements Describable<HtmlAudioNotifier> {
     
+    
+    @JavaScriptMethod
+    public boolean isEnabledByDefault() {
+        return getDescriptor().isEnabledByDefault();
+    }
+    
+    
     @JavaScriptMethod
     public String wazzup() {
         // TODO check what's up =)

@@ -1,5 +1,10 @@
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler">
+	
+	<link rel="stylesheet" type="text/css" href="${request.contextPath}/plugin/html-audio-notifier/css/client.css" />
+	
 	<st:bind var="htmlAudioNotifier" value="${app.getPlugin('html-audio-notifier')}" />
 	<script type="text/javascript" src="${request.contextPath}/plugin/html-audio-notifier/scripts/client.js" />
 	<script type="text/javascript" src="${request.contextPath}/plugin/html-audio-notifier/scripts/player.js" />
+	<script type="text/javascript" src="${request.contextPath}/plugin/html-audio-notifier/scripts/cookies.js" />
+	
 </j:jelly>

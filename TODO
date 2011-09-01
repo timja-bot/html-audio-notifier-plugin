@@ -1,12 +1,10 @@
 
-	- footer.jelly
-		- controls, change image via css-class
-		- toggle instead of disable on click
-		- maybe some text helping text as well?
-		- htmlAudioNotifierControl isn't created yet when the script runs the first time
-			- could we start the logic after the control has been created?
+	- client.js
+		- query the backed for new sounds, store some kind of timestamp in a cookie?
 			
-	- complete up the client/player javascript 
+	- complete up the client/player javascript
+	
+	- test sounds from config
 
 	- What's the point of the Plugin-class? is it required for the js-callbacks?
 		- could maybe the RunListener be the 'main' class?
