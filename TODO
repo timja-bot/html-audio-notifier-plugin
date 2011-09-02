@@ -1,10 +1,17 @@
 
+    - complete up the client/player javascript
+    
 	- client.js
 		- query the backed for new sounds, store some kind of timestamp in a cookie?
-			
-	- complete up the client/player javascript
+		
+	- tab2spaces, goddamnit eclipse!
 	
-	- test sounds from config
+	- config
+	   - test sounds, callbacks for 'playing' & 'onerror'
+	   - sjekk canPlayType crapen og vis i GUI, html-audio capable browser.., muligens på footer as well?
+        /*if (audioElement.canPlayType) {
+            alert('canPlay');
+        }
 
 	- What's the point of the Plugin-class? is it required for the js-callbacks?
 		- could maybe the RunListener be the 'main' class?

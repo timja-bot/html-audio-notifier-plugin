@@ -1,11 +1,16 @@
 var plugin;
-var executor = null;
+var executor;
+var player;
+
+
+// TODO clazz me up please
 
 
 function initializeHtmlAudioClient(htmlAudioNotifier) {
 	plugin = htmlAudioNotifier;
+	player = new AudioPlayer();
 	
-	enabled = isEnabled();
+	var enabled = isEnabled();
 	
 	if (enabled == null) {
 		plugin.isEnabledByDefault(function(t) {
@@ -18,7 +23,7 @@ function initializeHtmlAudioClient(htmlAudioNotifier) {
 
 
 function isEnabled() {
-	val = readCookie("htmlAudioClientEnabled");
+	var val = readCookie("htmlAudioClientEnabled");
 	return val == null
 		? null
 		: val == 'true';
@@ -40,7 +45,14 @@ function enableHtmlAudioClient(enabled) {
 
 function startPolling() {
 	stopPolling();
-	executor = new PeriodicalExecuter(pollBuildResults, 5);
+	//executor = new PeriodicalExecuter(pollBuildResults, 5);
+	
+	// TODO remove
+	plugin.wazzup(function(t) {
+		player.enqueue(t.responseObject());
+		player.enqueue('invalid crap');
+		player.enqueue(t.responseObject());
+	});
 }
 
 
@@ -67,7 +79,7 @@ function storeEnabledState(enabled) {
 function pollBuildResults() {
 	// TODO keep the last request-id in cookie or something? don't want to loose it on page-refresh
 	plugin.wazzup(function(t) {
-		playAudio(t.responseObject());
+		audioNotifier.enqueue(t.responseObject());
 	});
 }
 
