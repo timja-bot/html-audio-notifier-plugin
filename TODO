@@ -1,8 +1,6 @@
 
-    - complete up the client/player javascript
-    
-	- client.js
-		- query the backed for new sounds, store some kind of timestamp in a cookie?
+    - clean up client.js
+	- query the backed for new sounds, store some kind of timestamp in a cookie?
 		
 	- tab2spaces, goddamnit eclipse!
 	
@@ -26,6 +24,8 @@
 	- basic config, sounds for failed, failed-again, success-after-failure?
 	
 	- html page for sounds, or maybe embed in the main-page w/ off/on controls? maybe http://xxxxx?simpleSoundNotifier=on
+	
+	- remove console.log stuff from js
 
 	- pom-TODO's	
 		- new jenkins-versions / name & description (displayed in the installed plugins page..)
