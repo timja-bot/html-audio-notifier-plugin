@@ -1,8 +1,11 @@
 
-    - clean up client.js
-	- query the backed for new sounds, store some kind of timestamp in a cookie?
-		
-	- tab2spaces, goddamnit eclipse!
+    - HtmlAudioNotifier
+        - is the Plugin-class required?
+        
+    - BuildResultsInterceptor
+        - start intercepting some results =)
+        - unit-testing
+        - some shared datastructures between the plugin/json stuff & the interceptor
 	
 	- config
 	   - test sounds, callbacks for 'playing' & 'onerror'
@@ -10,30 +13,23 @@
         /*if (audioElement.canPlayType) {
             alert('canPlay');
         }
-
-	- What's the point of the Plugin-class? is it required for the js-callbacks?
-		- could maybe the RunListener be the 'main' class?
-	
-	- plugin's global.jelly enable/disable sounds by default .. checkbox
-	
-	- client.jelly can probably be converted to plain javascript in src/main/webapp
-		- create a more generic audio-player? that can be used from the config-pages to test sounds as well?
-	 
-	- GlobalBuildListener in a top-level class?
-	
-	- basic config, sounds for failed, failed-again, success-after-failure?
-	
-	- html page for sounds, or maybe embed in the main-page w/ off/on controls? maybe http://xxxxx?simpleSoundNotifier=on
 	
 	- remove console.log stuff from js
+	
+	- hudson restart messes up the stapler-urls...
 
 	- pom-TODO's	
 		- new jenkins-versions / name & description (displayed in the installed plugins page..)
+	
 	- README
 	- config/help etc
 		- per field help/doc
 		    <f:entry ...
 		      help="/plugin/simple-sound-notifier/help-xx.html">
+		      
+    - tab2spaces, goddamnit eclipse!
+    
+    - longpoll??
 	
 	
 	- license-information in the descriptor-files?

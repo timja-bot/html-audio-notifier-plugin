@@ -1,12 +1,11 @@
-
 /*
- * TODO kvakkel in the skaft? 
+ * Polls the plugin for new sounds to play.
  */
 var HtmlAudioNotifierClient = Class.create();
 HtmlAudioNotifierClient.prototype = {
-		
+	
 	initialize: function(plugin, uiElement) {
-		this.plugin = plugin;	// TODO necessary / does it work at all?
+		this.plugin = plugin;
 		this.uiElement = uiElement;
 		this.player = new AudioPlayer();
 		this.executor = null;
@@ -14,8 +13,9 @@ HtmlAudioNotifierClient.prototype = {
 		var enabled = this.isEnabled();
 		
 		if (enabled == null) {
+			var that = this;
 			this.plugin.isEnabledByDefault(function(t) {
-				this.enable(t.responseObject());
+				that.enable(t.responseObject());
 			});
 		} else {
 			this.enable(enabled);
@@ -49,9 +49,7 @@ HtmlAudioNotifierClient.prototype = {
 		this.stop();
 		
 		var that = this;
-		this.executor = new PeriodicalExecuter(
-				function() { that.pollBuildResults(that) },
-				5);
+		this.executor = new PeriodicalExecuter(function() { that.poll(that) }, 1); // TODO 5?
 	},
 
 	stop: function() {
@@ -71,22 +69,30 @@ HtmlAudioNotifierClient.prototype = {
 		createCookie("htmlAudioClientEnabled", enabled, 30);
 	},
 
-	pollBuildResults: function(that) {
-		// TODO keep the last request-id in cookie or something? don't want to loose it on page-refresh
-			// or base it on something else.. ip/browser-header or something?
-			// or just update the cookie each time a new sound is retrieved..
-		//that.plugin.wazzup(function(t) {
-		//	that.player..enqueue(t.responseObject());
-		//});
-			// TODO why can't we use 'this' here?
-		that.plugin.wazzup(function(t) {
-			that.player.enqueue(t.responseObject());
-			that.player.enqueue('invalid crap');
-			that.player.enqueue(t.responseObject());
-			that.player.enqueue('invalid crap');
-			that.player.enqueue(t.responseObject());
-			that.player.enqueue(t.responseObject());
+	poll: function(client) {
+		client.plugin.nextSounds(client.getPrevSoundId(), function(t) {
+			var result = t.responseObject();
+			
+			if (!result) {
+				return;
+			}
+			
+			result.each(function(sound) {
+				client.player.enqueue(sound.src);
+				client.setPrevSoundId(sound.id);
+			});
 		});
-		that.stop();
+	},
+	
+	getPrevSoundId: function() {
+		if (this.prevSoundId === undefined) {
+			this.prevSoundId = readCookie("htmlAudioClientPrevSound");
+		}
+		return this.prevSoundId;
+	},
+	
+	setPrevSoundId: function(prevSoundId) {
+		this.prevSoundId = prevSoundId;
+		createCookie("htmlAudioClientPrevSound", prevSoundId, 1);
 	}
 };

@@ -1,4 +1,3 @@
-
 /*
  * Simple html audio player. Capable of playing multiple sounds by putting them on a queue, and popping
  * them off whenever the audio-element is available.

@@ -1,6 +1,7 @@
 package jenkins.plugins.htmlaudio;
 
 import jenkins.model.Jenkins;
+import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 import org.kohsuke.stapler.StaplerRequest;
@@ -27,9 +28,14 @@ public final class HtmlAudioNotifier extends Plugin implements Describable<HtmlA
     
     
     @JavaScriptMethod
-    public String wazzup() {
-        // TODO check what's up =)
-        return getDescriptor().getFailureSoundUrl();
+    public JSONArray nextSounds(String prevId) { // TODO naming & crap...
+        System.out.println("> nextSounds() - " + prevId);
+        if ("456".equals(prevId)) {
+            return null;
+        }
+        return new JSONArray()
+            .element(new JSONObject().accumulate("id", 123).accumulate("src", getDescriptor().getFailureSoundUrl()))
+            .element(new JSONObject().accumulate("id", 456).accumulate("src", getDescriptor().getFailureSoundUrl()));
     }
     
     
