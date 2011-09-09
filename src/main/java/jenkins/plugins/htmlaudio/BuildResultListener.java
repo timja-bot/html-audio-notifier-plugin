@@ -5,18 +5,19 @@ import hudson.model.Run;
 import hudson.model.TaskListener;
 import hudson.model.listeners.RunListener;
 
+
 /**
  * TODO
  *  
  * @author Lars Hvile
  */
 @Extension
-public final class BuildResultInterceptor extends RunListener<Run<?, ?>> {
+public final class BuildResultListener extends RunListener<Run<?, ?>> {
     
     @Override
     public void onCompleted(Run<?, ?> r, TaskListener listener) {
 
         // TODO do something useful...
-        System.out.println("> " + r.getDisplayName() + " / " + r.getResult());
+        System.out.println("> #" + r.number + ": " + r.getDisplayName() + " / " + r.getResult());
     }
 }

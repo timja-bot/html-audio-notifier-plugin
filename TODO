@@ -1,4 +1,11 @@
 
+    domain
+    -------------------------------------------
+            
+        BuildEventCleanupService ?????
+            + removeExpiredResults() ?
+
+
     - HtmlAudioNotifier
         - is the Plugin-class required?
         
@@ -13,6 +20,9 @@
         /*if (audioElement.canPlayType) {
             alert('canPlay');
         }
+        
+    - expire the prevSoundId muuch sooner, also.. soundId? eventId?
+        - if the specified eventId doesn't exist, make the client clear it's cookie.. set to null / remove?
 	
 	- remove console.log stuff from js
 	
