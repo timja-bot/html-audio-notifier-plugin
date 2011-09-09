@@ -1,13 +1,11 @@
 
-    domain
-    -------------------------------------------
-            
-        BuildEventCleanupService ?????
-            + removeExpiredResults() ?
-
+    domain.BuildEventCleanupService ?????
+        + removeExpiredResults() ?
 
     - HtmlAudioNotifier
         - is the Plugin-class required?
+        
+    - remember to synchronize usage of the event-repo, or build a little tx-template to do it..
         
     - BuildResultsInterceptor
         - start intercepting some results =)

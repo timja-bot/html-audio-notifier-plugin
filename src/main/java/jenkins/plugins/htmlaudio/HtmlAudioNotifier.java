@@ -36,6 +36,8 @@ public final class HtmlAudioNotifier extends Plugin implements Describable<HtmlA
         return new JSONArray()
             .element(new JSONObject().accumulate("id", 123).accumulate("src", getDescriptor().getFailureSoundUrl()))
             .element(new JSONObject().accumulate("id", 456).accumulate("src", getDescriptor().getFailureSoundUrl()));
+        
+        // TODO always deliver the id of 'last' event? This is the value that should be cached by the browser..
     }
     
     

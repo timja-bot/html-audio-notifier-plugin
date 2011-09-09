@@ -12,9 +12,9 @@ import org.junit.runners.JUnit4;
 
 
 @RunWith(JUnit4.class)
-public class BuildEventRepositoryTest {
+public class VolatileEventRepositoryTest {
     
-    private final BuildEventRepository repo = new DefaultBuildEventRepository();
+    private final BuildEventRepository repo = new VolatileBuildEventRepository();
     
     
     @Test

@@ -8,20 +8,19 @@ import java.util.List;
 
 
 /**
+ * Simple in-memory implementation of {@link BuildEventRepository}.
+ * 
  * @author Lars Hvile
  */
-public final class DefaultBuildEventRepository implements BuildEventRepository {
+public final class VolatileBuildEventRepository implements BuildEventRepository {
     
-    private final Object lock = new Object();
     private final List<Long> index = new ArrayList<Long>();
     private final List<BuildEvent> events = new ArrayList<BuildEvent>();
     
     
     public void add(BuildEvent event) {
-        synchronized (lock) {
-            final int position = insertToIndex(event.getId());
-            events.add(position, event);
-        }
+        final int position = insertToIndex(event.getId());
+        events.add(position, event);
     }
     
     
@@ -33,9 +32,7 @@ public final class DefaultBuildEventRepository implements BuildEventRepository {
     
     
     public Collection<BuildEvent> list() {
-        synchronized (lock) {
-            return safeCopy(events);
-        }
+        return safeCopy(events);
     }
     
     
@@ -45,11 +42,9 @@ public final class DefaultBuildEventRepository implements BuildEventRepository {
     
     
     public Collection<BuildEvent> findNewerThan(long buildEventId) {
-        synchronized (lock) {
-            return safeCopy(events.subList(
-                from(buildEventId),
-                to()));
-        }
+        return safeCopy(events.subList(
+            from(buildEventId),
+            to()));
     }
     
     
@@ -69,15 +64,13 @@ public final class DefaultBuildEventRepository implements BuildEventRepository {
     
     
     public void removeOlderThan(long maxAgeMs) {
-        synchronized (lock) {
-            final Iterator<BuildEvent> events = this.events.iterator();
-            
-            while (events.hasNext()) {
-                final BuildEvent e = events.next(); 
-                if (e.getAgeInMs() >= maxAgeMs) {
-                    events.remove();
-                    index.remove(e.getId());
-                }
+        final Iterator<BuildEvent> events = this.events.iterator();
+        
+        while (events.hasNext()) {
+            final BuildEvent e = events.next(); 
+            if (e.getAgeInMs() >= maxAgeMs) {
+                events.remove();
+                index.remove(e.getId());
             }
         }
     }
