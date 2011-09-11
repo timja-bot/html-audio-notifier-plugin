@@ -36,6 +36,7 @@
     
     - longpoll??
 	
+	- make a test that actually fires up hudson & does something, one of these tests seems to run as standard anyway, but doesn't do anything?
 	
 	- license-information in the descriptor-files?
 		- tango icons

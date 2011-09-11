@@ -15,18 +15,21 @@ import jenkins.plugins.htmlaudio.domain.BuildEventRepository;
  * @author Lars Hvile
  */
 public final class VolatileBuildEventRepository extends BuildEventRepository {
-    
+   
+    private final Object lock = new Object();
     private final List<Long> index = new ArrayList<Long>();
     private final List<BuildEvent> events = new ArrayList<BuildEvent>();
     
     
     public void add(BuildEvent event) {
-        if (contains(event)) {
-            throw new IllegalArgumentException(event + " already exists");
+        synchronized (lock) {
+            if (contains(event)) {
+                throw new IllegalArgumentException(event + " already exists");
+            }
+            
+            final int position = insertToIndex(event.getId());
+            events.add(position, event);
         }
-        
-        final int position = insertToIndex(event.getId());
-        events.add(position, event);
     }
     
     
@@ -48,19 +51,23 @@ public final class VolatileBuildEventRepository extends BuildEventRepository {
     
     
     public void remove(BuildEvent event) {
-        final int pos = binarySearchIndex(event.getId());
-        
-        if (pos < 0) {
-            throw new IllegalArgumentException(event + " not found");
+        synchronized (lock) {
+            final int pos = binarySearchIndex(event.getId());
+            
+            if (pos < 0) {
+                throw new IllegalArgumentException(event + " not found");
+            }
+            
+            index.remove(pos);
+            events.remove(pos);
         }
-        
-        index.remove(pos);
-        events.remove(pos);
     }
     
     
     public Collection<BuildEvent> list() {
-        return safeCopy(events);
+        synchronized (lock) {
+            return safeCopy(events);
+        }
     }
     
     
@@ -70,9 +77,11 @@ public final class VolatileBuildEventRepository extends BuildEventRepository {
     
     
     public Collection<BuildEvent> findNewerThan(long buildEventId) {
-        return safeCopy(events.subList(
-            from(buildEventId),
-            to()));
+        synchronized (lock) {
+            return safeCopy(events.subList(
+                from(buildEventId),
+                to()));
+        }
     }
     
     

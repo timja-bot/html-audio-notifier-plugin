@@ -16,9 +16,11 @@ public class DefaultBuildEventCleanupService extends BuildEventCleanupService {
     
     
     public void removeExpiredEvents(BuildEventRepository repo) {
-        for (BuildEvent e : repo.list()) {
-            if (tooOld(e)) {
-                repo.remove(e);
+        synchronized(repo) {
+            for (BuildEvent e : repo.list()) {
+                if (tooOld(e)) {
+                    repo.remove(e);
+                }
             }
         }
     }
