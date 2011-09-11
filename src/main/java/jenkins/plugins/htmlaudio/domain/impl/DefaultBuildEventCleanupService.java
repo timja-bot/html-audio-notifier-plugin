@@ -1,5 +1,7 @@
 package jenkins.plugins.htmlaudio.domain.impl;
 
+import java.util.concurrent.TimeUnit;
+
 import jenkins.plugins.htmlaudio.domain.BuildEvent;
 import jenkins.plugins.htmlaudio.domain.BuildEventCleanupService;
 import jenkins.plugins.htmlaudio.domain.BuildEventRepository;
@@ -8,28 +10,21 @@ import jenkins.plugins.htmlaudio.domain.BuildEventRepository;
 /**
  * @author Lars Hvile
  */
-public class DefaultBuildEventCleanupService implements BuildEventCleanupService {
+public class DefaultBuildEventCleanupService extends BuildEventCleanupService {
     
-    private final BuildEventRepository repo;
-    private final long maxAgeMs;
-    
-    
-    public DefaultBuildEventCleanupService(BuildEventRepository repo, long maxAgeMs) {
-        this.repo = repo;
-        this.maxAgeMs = maxAgeMs;
-    }
+    private static final long MAX_AGE_MS = TimeUnit.MINUTES.toMillis(1);
     
     
-    public void removeExpiredEvents() {
+    public void removeExpiredEvents(BuildEventRepository repo) {
         for (BuildEvent e : repo.list()) {
-            if (tooOld(e, maxAgeMs)) {
+            if (tooOld(e)) {
                 repo.remove(e);
             }
         }
     }
 
 
-    private boolean tooOld(BuildEvent e, long limit) {
-        return e.getAgeInMs() >= limit;
+    private boolean tooOld(BuildEvent e) {
+        return e.getAgeInMs() >= MAX_AGE_MS;
     }
 }

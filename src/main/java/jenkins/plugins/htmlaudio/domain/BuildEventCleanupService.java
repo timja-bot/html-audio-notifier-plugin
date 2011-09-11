@@ -1,13 +1,21 @@
 package jenkins.plugins.htmlaudio.domain;
 
+import jenkins.plugins.htmlaudio.domain.impl.DefaultBuildEventCleanupService;
+
 
 /**
  * Keeps the {@link BuildEventRepository} clean & fresh by removing expired events.
  * 
  * @author Lars Hvile
  */
-public interface BuildEventCleanupService {
+public abstract class BuildEventCleanupService {
     
-    void removeExpiredEvents();
+    private static final BuildEventCleanupService instance = new DefaultBuildEventCleanupService();
+    
+    public static BuildEventCleanupService instance() {
+        return instance;
+    }
+    
+    public abstract void removeExpiredEvents(BuildEventRepository repository);
 
 }

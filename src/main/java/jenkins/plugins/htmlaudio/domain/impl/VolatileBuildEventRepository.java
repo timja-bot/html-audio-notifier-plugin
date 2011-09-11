@@ -14,7 +14,7 @@ import jenkins.plugins.htmlaudio.domain.BuildEventRepository;
  * 
  * @author Lars Hvile
  */
-public final class VolatileBuildEventRepository implements BuildEventRepository {
+public final class VolatileBuildEventRepository extends BuildEventRepository {
     
     private final List<Long> index = new ArrayList<Long>();
     private final List<BuildEvent> events = new ArrayList<BuildEvent>();
