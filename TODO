@@ -1,30 +1,33 @@
 
     - HtmlAudioNotifier
-        - is the Plugin-class required?
+        - split out the client-methods stuff into a dedicated class, (Action)?
+        - create some tests on the plugin, config-load&save etc
         
-    - remember to synchronize usage of the event-repo, or build a little tx-template to do it..
+    - the new js-Action
+        - expire old sounds..
+        - hudson restart messes up the stapler-urls...
+        - handle StaplerRequests direcly.. 
         
-    - BuildResultsInterceptor
-        - start intercepting some results =)
-        - unit-testing
-        - some shared datastructures between the plugin/json stuff & the interceptor
-	
 	- config
 	   - test sounds, callbacks for 'playing' & 'onerror'
 	   - sjekk canPlayType crapen og vis i GUI, html-audio capable browser.., muligens på footer as well?
         /*if (audioElement.canPlayType) {
             alert('canPlay');
         }
+       - clean up the config-pages, texts etc
         
     - expire the prevSoundId muuch sooner, also.. soundId? eventId?
         - if the specified eventId doesn't exist, make the client clear it's cookie.. set to null / remove?
-	
+        - // TODO always deliver the id of 'last' event? This is the value that should be cached by the browser..
+        
 	- remove console.log stuff from js
-	
-	- hudson restart messes up the stapler-urls...
 
 	- pom-TODO's	
 		- new jenkins-versions / name & description (displayed in the installed plugins page..)
+		
+	- longpoll??
+    
+    - make a test that actually fires up hudson & does something, one of these tests seems to run as standard anyway, but doesn't do anything?
 	
 	- README
 	- config/help etc
@@ -34,16 +37,11 @@
 		      
     - tab2spaces, goddamnit eclipse!
     
-    - longpoll??
-	
-	- make a test that actually fires up hudson & does something, one of these tests seems to run as standard anyway, but doesn't do anything?
-	
 	- license-information in the descriptor-files?
 		- tango icons
 		- wav files...
 		
 	- remove the bin-launchers, maybe put some more documentation regarding the basic plugin-dev into README?
-
 	
 	- jenkins-plugin, simple-sound-notifier
 		https://wiki.jenkins-ci.org/display/JENKINS/Extend+Jenkins

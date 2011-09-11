@@ -77,7 +77,7 @@ HtmlAudioNotifierClient.prototype = {
 				return;
 			}
 			
-			result.each(function(sound) {
+			result.sounds.each(function(sound) {
 				client.player.enqueue(sound.src);
 				client.setPrevSoundId(sound.id);
 			});
