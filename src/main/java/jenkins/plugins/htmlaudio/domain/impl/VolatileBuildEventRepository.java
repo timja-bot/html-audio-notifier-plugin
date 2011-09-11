@@ -1,10 +1,12 @@
-package jenkins.plugins.htmlaudio.domain;
+package jenkins.plugins.htmlaudio.domain.impl;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
+
+import jenkins.plugins.htmlaudio.domain.BuildEvent;
+import jenkins.plugins.htmlaudio.domain.BuildEventRepository;
 
 
 /**
@@ -19,15 +21,41 @@ public final class VolatileBuildEventRepository implements BuildEventRepository 
     
     
     public void add(BuildEvent event) {
+        if (contains(event)) {
+            throw new IllegalArgumentException(event + " already exists");
+        }
+        
         final int position = insertToIndex(event.getId());
         events.add(position, event);
+    }
+    
+    
+    private boolean contains(BuildEvent event) {
+        return binarySearchIndex(event.getId()) >= 0;
+    }
+    
+    
+    private int binarySearchIndex(long id) {
+        return Collections.binarySearch(index, id);
     }
     
     
     private int insertToIndex(long id) {
         index.add(id);
         Collections.sort(index);
-        return index.indexOf(id);
+        return binarySearchIndex(id);
+    }
+    
+    
+    public void remove(BuildEvent event) {
+        final int pos = binarySearchIndex(event.getId());
+        
+        if (pos < 0) {
+            throw new IllegalArgumentException(event + " not found");
+        }
+        
+        index.remove(pos);
+        events.remove(pos);
     }
     
     
@@ -53,25 +81,7 @@ public final class VolatileBuildEventRepository implements BuildEventRepository 
     }
     
     
-    private int binarySearchIndex(long id) {
-        return Collections.binarySearch(index, id);
-    }
-    
-    
     private int to() {
         return index.size();
-    }
-    
-    
-    public void removeOlderThan(long maxAgeMs) {
-        final Iterator<BuildEvent> events = this.events.iterator();
-        
-        while (events.hasNext()) {
-            final BuildEvent e = events.next(); 
-            if (e.getAgeInMs() >= maxAgeMs) {
-                events.remove();
-                index.remove(e.getId());
-            }
-        }
     }
 }

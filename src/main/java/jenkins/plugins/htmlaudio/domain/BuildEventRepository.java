@@ -16,6 +16,11 @@ public interface BuildEventRepository {
     void add(BuildEvent event);
     
     /**
+     * Removes an existing {@link BuildEvent}.
+     */
+    void remove(BuildEvent event);
+    
+    /**
      * Returns each existing {@link BuildEvent}.
      */
     Collection<BuildEvent> list();
@@ -25,9 +30,4 @@ public interface BuildEventRepository {
      */
     Collection<BuildEvent> findNewerThan(long buildEventId);
     
-    /**
-     * Removes events that are older than a provided maximum age.
-     */
-    void removeOlderThan(long maxAgeMs);
-
 }

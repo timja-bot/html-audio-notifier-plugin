@@ -3,8 +3,8 @@ package jenkins.plugins.htmlaudio.domain;
 import static org.junit.Assert.*;
 
 import java.util.Arrays;
-import java.util.Date;
-import java.util.concurrent.TimeUnit;
+
+import jenkins.plugins.htmlaudio.domain.impl.VolatileBuildEventRepository;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -46,6 +46,41 @@ public class VolatileEventRepositoryTest {
     }
     
     
+    @Test(expected=IllegalArgumentException.class)
+    public void same_event_cannot_be_added_twice() {
+        final BuildEvent e = e();
+        
+        repo.add(e);
+        repo.add(e);
+    }
+    
+    
+    @Test
+    public void events_can_be_removed() {
+        final BuildEvent e1 = e();
+        final BuildEvent e2 = e();
+        final BuildEvent e3 = e();
+        
+        repo.add(e1);
+        repo.add(e2);
+        repo.add(e3);
+        assertRepoEquals(e1, e2, e3);
+        
+        repo.remove(e2);
+        assertRepoEquals(e1, e3);
+        
+        repo.remove(e1);
+        repo.remove(e3);
+        assertRepoEquals();
+    }
+    
+    
+    @Test(expected=IllegalArgumentException.class)
+    public void unknown_events_cannot_be_removed() {
+        repo.remove(e());
+    }
+    
+    
     @Test
     public void ordering_of_events_is_based_on_id() {
         final BuildEvent e1 = e();
@@ -83,44 +118,6 @@ public class VolatileEventRepositoryTest {
         
         assertEquals(Arrays.asList(e5), repo.findNewerThan(e4.getId()));
         assertTrue(repo.findNewerThan(e5.getId() + 1000).isEmpty());
-    }
-    
-    
-    @Test
-    public void events_older_than_a_provided_limit_can_be_removed() {
-        final long base = System.currentTimeMillis();
-        final long hour = TimeUnit.HOURS.toMillis(1);
-        
-        final BuildEvent e1 = e(base);
-        final BuildEvent e2 = e(base - 1 * hour);
-        final BuildEvent e3 = e(base - 2 * hour);
-        final BuildEvent e4 = e(base);
-        
-        for (BuildEvent e : Arrays.asList(e1, e2, e3, e4)) {
-            repo.add(e);
-        }
-        assertRepoEquals(e1, e2, e3, e4);
-        
-        // keep all
-        repo.removeOlderThan(3 * hour);
-        assertEquals(4, repo.list().size());
-        
-        // remove the oldest (e3)
-        repo.removeOlderThan(2 * hour);
-        assertRepoEquals(e1, e2, e4);
-        
-        // 2nd oldest (e2)
-        repo.removeOlderThan(1 * hour);
-        assertRepoEquals(e1, e4);
-        
-        // .. and the rest of 'em
-        repo.removeOlderThan(0);
-        assertRepoEquals();
-    }
-    
-    
-    private BuildEvent e(long created) {
-        return new BuildEvent(null, new Date(created));
     }
     
     

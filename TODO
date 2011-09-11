@@ -1,7 +1,4 @@
 
-    domain.BuildEventCleanupService ?????
-        + removeExpiredResults() ?
-
     - HtmlAudioNotifier
         - is the Plugin-class required?
         
