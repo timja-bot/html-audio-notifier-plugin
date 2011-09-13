@@ -90,11 +90,9 @@ HtmlAudioNotifierClient.prototype = {
     				return;
     			}
     			
-    			// TODO store the last id
-    			
-    			result.sounds.each(function(sound) {
-    				client.player.enqueue(sound.src);
-    				client.setPreviousNotification(sound.id); // TODO remove?
+    			client.setPreviousNotification(result.currentNotification);
+    			result.notifications.each(function(src) {
+    				client.player.enqueue(src);
     			});
             }
         });
@@ -108,9 +106,7 @@ HtmlAudioNotifierClient.prototype = {
 	},
 	
 	setPreviousNotification: function(n) {
-		if (this.prevNotification != n) {
-			this.prevNotification = n;
-			createCookie("prevHtmlAudioNotification", n, 1); // TODO expire this sucker muuuch sooner, ~5 minutes?
-		}
+		this.prevNotification = n;
+		createCookie("prevHtmlAudioNotification", n, 1); // TODO expire this sucker muuuch sooner, ~5 minutes?
 	}
 };

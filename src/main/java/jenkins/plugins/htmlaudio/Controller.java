@@ -62,8 +62,10 @@ public final class Controller implements RootAction {
     public void doNext(StaplerRequest req, StaplerResponse resp) throws IOException {
         final Collection<BuildEvent> events = findEvents(req.getParameter("previous"));
         final JSONObject result = new JSONObject()
-            // TODO attach the 'last' existing event-id, if any?
-            .element("sounds", createSoundsArray(events));
+            .element("currentNotification", getCurrentNotificationId())
+            .element("notifications", createNotificationsArray(events));
+        
+        // TODO do the cleanup if necessary
         
         writeJsonResponse(resp, result);
     }
@@ -74,6 +76,14 @@ public final class Controller implements RootAction {
         return previousEventId == null
             ? repository.list()
             : repository.findNewerThan(previousEventId);
+    }
+    
+    
+    private Object getCurrentNotificationId() {
+        final Long lastEventId = repository.getLastEventId();
+        return lastEventId == null
+            ? new JSONObject(true)
+            : lastEventId;
     }
     
     
@@ -90,15 +100,13 @@ public final class Controller implements RootAction {
     }
     
     
-    private JSONArray createSoundsArray(Collection<BuildEvent> events) {
+    private JSONArray createNotificationsArray(Collection<BuildEvent> events) {
         final JSONArray result = new JSONArray();
         
         for (BuildEvent e : events) {
             final String url = getSoundUrl(e.getResult());
             if (url != null) {
-                result.element(new JSONObject()
-                    .element("id", e.getId())
-                    .element("src", url));
+                result.element(url);
             }
         }
         
