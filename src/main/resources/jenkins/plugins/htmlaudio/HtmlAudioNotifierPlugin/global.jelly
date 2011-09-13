@@ -4,11 +4,11 @@
     <f:section title="HTML audio notifications">
       
       <f:entry title="Enabled by default">
-          <f:checkbox name="enabledByDefault" checked="${descriptor.enabledByDefault}" />
+          <f:checkbox name="htmlAudioEnabledByDefault" checked="${descriptor.enabledByDefault}" />
       </f:entry>
       
       <f:entry title="Failure sound">
-          <f:textbox name="failureSoundUrl" value="${descriptor.failureSoundUrl}" />
+          <f:textbox name="htmlAudioFailureSoundUrl" value="${descriptor.failureSoundUrl}" />
       </f:entry>
     </f:section>
 </j:jelly>

@@ -1,7 +1,4 @@
 
-    - HtmlAudioNotifier
-        - create some tests on the plugin, config-load&save etc
-        
 	- config
 	   - test sounds, callbacks for 'playing' & 'onerror'
 	   - sjekk canPlayType crapen og vis i GUI, html-audio capable browser.., muligens på footer as well?
@@ -10,10 +7,6 @@
         }
        - clean up the config-pages, texts etc
         
-    - expire the prevSoundId muuch sooner, also.. soundId? eventId?
-        - if the specified eventId doesn't exist, make the client clear it's cookie.. set to null / remove?
-        - // TODO always deliver the id of 'last' event? This is the value that should be cached by the browser..
-        
 	- remove console.log stuff from js
 
 	- pom-TODO's	
@@ -21,7 +14,6 @@
 		
 	- longpoll??
     
-    - make a test that actually fires up hudson & does something, one of these tests seems to run as standard anyway, but doesn't do anything?
 	
 	- README
 	- config/help etc

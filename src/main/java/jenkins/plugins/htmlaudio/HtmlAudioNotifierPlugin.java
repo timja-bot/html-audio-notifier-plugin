@@ -1,11 +1,11 @@
 package jenkins.plugins.htmlaudio;
 
-
 import jenkins.model.Jenkins;
 import jenkins.plugins.htmlaudio.domain.BuildEventCleanupService;
 import jenkins.plugins.htmlaudio.domain.BuildEventRepository;
 import net.sf.json.JSONObject;
 
+import org.apache.commons.lang.StringUtils;
 import org.kohsuke.stapler.StaplerRequest;
 
 import hudson.Extension;
@@ -15,11 +15,11 @@ import hudson.model.Descriptor;
 
 
 /**
- * TODO
+ * 'Main' class of the plugin. Handles the configuration & acts as a DI-container for the other components.
  * 
  * @author Lars Hvile
- */ // TODO rename me, ..Plugin
-public final class HtmlAudioNotifier extends Plugin implements Describable<HtmlAudioNotifier> {
+ */
+public final class HtmlAudioNotifierPlugin extends Plugin implements Describable<HtmlAudioNotifierPlugin> {
     
     @Override
     public void postInitialize() {
@@ -42,15 +42,15 @@ public final class HtmlAudioNotifier extends Plugin implements Describable<HtmlA
     
     
     @Extension
-    public static final class PluginDescriptor extends Descriptor<HtmlAudioNotifier>
+    public static final class PluginDescriptor extends Descriptor<HtmlAudioNotifierPlugin>
             implements Configuration {
         
-        private boolean enabledByDefault; // TODO synchronization?
-        private String failureSoundUrl;
+        private volatile boolean enabledByDefault;
+        private volatile String failureSoundUrl;
         
         
         public PluginDescriptor() {
-            this.enabledByDefault = true;
+            this.enabledByDefault = false;
             this.failureSoundUrl = "horse.wav";
             load();
         }
@@ -58,14 +58,19 @@ public final class HtmlAudioNotifier extends Plugin implements Describable<HtmlA
         
         @Override
         public String getDisplayName() {
-            return "hoppla"; // TODO where is this used?
+            return "HTML audio notifications";
         }
         
         
         @Override
         public boolean configure(StaplerRequest req, JSONObject json) throws FormException {
-            enabledByDefault = json.getBoolean("enabledByDefault");
-            failureSoundUrl = json.getString("failureSoundUrl");
+            enabledByDefault = json.getBoolean("htmlAudioEnabledByDefault");
+            failureSoundUrl = json.getString("htmlAudioFailureSoundUrl");
+            
+            if (StringUtils.isBlank(failureSoundUrl)) {
+                failureSoundUrl = null;
+            }
+            
             save();
             return super.configure(req, json);
         }
@@ -76,8 +81,18 @@ public final class HtmlAudioNotifier extends Plugin implements Describable<HtmlA
         }
         
         
+        public void setEnabledByDefault(boolean enabledByDefault) {
+            this.enabledByDefault = enabledByDefault;
+        }
+        
+        
         public String getFailureSoundUrl() {
             return failureSoundUrl;
+        }
+        
+        
+        public void setFailureSoundUrl(String failureSoundUrl) {
+            this.failureSoundUrl = failureSoundUrl;
         }
     }
 }
