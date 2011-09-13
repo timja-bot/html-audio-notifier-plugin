@@ -38,4 +38,9 @@ public abstract class BuildEventRepository {
      */
     public abstract Collection<BuildEvent> findNewerThan(long buildEventId);
     
+    /**
+     * Returns the id of the newest {@link BuildEvent} or {@code null} if the repository is empty.
+     */
+    public abstract Long getLastEventId();
+    
 }

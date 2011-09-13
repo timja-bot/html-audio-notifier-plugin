@@ -16,13 +16,13 @@ import jenkins.plugins.htmlaudio.domain.BuildEventRepository;
  */
 public final class VolatileBuildEventRepository extends BuildEventRepository {
    
-    private final Object lock = new Object();
+    private final Object mutex = new Object();
     private final List<Long> index = new ArrayList<Long>();
     private final List<BuildEvent> events = new ArrayList<BuildEvent>();
     
     
     public void add(BuildEvent event) {
-        synchronized (lock) {
+        synchronized (mutex) {
             if (contains(event)) {
                 throw new IllegalArgumentException(event + " already exists");
             }
@@ -51,7 +51,7 @@ public final class VolatileBuildEventRepository extends BuildEventRepository {
     
     
     public void remove(BuildEvent event) {
-        synchronized (lock) {
+        synchronized (mutex) {
             final int pos = binarySearchIndex(event.getId());
             
             if (pos < 0) {
@@ -65,7 +65,7 @@ public final class VolatileBuildEventRepository extends BuildEventRepository {
     
     
     public Collection<BuildEvent> list() {
-        synchronized (lock) {
+        synchronized (mutex) {
             return safeCopy(events);
         }
     }
@@ -77,7 +77,7 @@ public final class VolatileBuildEventRepository extends BuildEventRepository {
     
     
     public Collection<BuildEvent> findNewerThan(long buildEventId) {
-        synchronized (lock) {
+        synchronized (mutex) {
             return safeCopy(events.subList(
                 from(buildEventId),
                 to()));
@@ -92,5 +92,15 @@ public final class VolatileBuildEventRepository extends BuildEventRepository {
     
     private int to() {
         return index.size();
+    }
+    
+    
+    @Override
+    public Long getLastEventId() {
+        synchronized (mutex) {
+            return index.isEmpty()
+                ? null
+                : index.get(index.size() - 1);
+        }
     }
 }

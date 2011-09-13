@@ -76,5 +76,10 @@ public class BuildEventCleanupServiceTest {
         public Collection<BuildEvent> findNewerThan(long buildEventId) {
             throw new UnsupportedOperationException();
         }
+        
+        @Override
+        public Long getLastEventId() {
+            throw new UnsupportedOperationException();
+        }
     }
 }

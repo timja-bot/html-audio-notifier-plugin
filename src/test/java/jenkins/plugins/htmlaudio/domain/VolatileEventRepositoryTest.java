@@ -131,4 +131,25 @@ public class VolatileEventRepositoryTest {
         
         assertEquals(1, repo.list().size());
     }
+    
+    
+    @Test
+    public void id_of_the_last_event_can_be_retrieved() {
+        final BuildEvent e1 = e();
+        final BuildEvent e2 = e();
+        
+        assertNull(repo.getLastEventId());
+        
+        repo.add(e1);
+        assertEquals(e1.getId(), (long)repo.getLastEventId());
+        
+        repo.add(e2);
+        assertEquals(e2.getId(), (long)repo.getLastEventId());
+        
+        repo.remove(e2);
+        assertEquals(e1.getId(), (long)repo.getLastEventId());
+        
+        repo.remove(e1);
+        assertNull(repo.getLastEventId());
+    }
 }
