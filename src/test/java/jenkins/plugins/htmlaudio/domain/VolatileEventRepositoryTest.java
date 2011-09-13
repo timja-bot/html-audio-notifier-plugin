@@ -1,5 +1,6 @@
 package jenkins.plugins.htmlaudio.domain;
 
+import static jenkins.plugins.htmlaudio.support.DomainObjectFactory.*;
 import static org.junit.Assert.*;
 
 import java.util.Arrays;
@@ -25,19 +26,14 @@ public class VolatileEventRepositoryTest {
     
     @Test
     public void events_can_be_added() {
-        final BuildEvent e1 = e();
-        final BuildEvent e2 = e();
+        final BuildEvent e1 = event();
+        final BuildEvent e2 = event();
         
         repo.add(e1);
         assertRepoEquals(e1);
         
         repo.add(e2);
         assertRepoEquals(e1, e2);
-    }
-    
-    
-    private BuildEvent e() {
-        return new BuildEvent(null);
     }
     
     
@@ -48,7 +44,7 @@ public class VolatileEventRepositoryTest {
     
     @Test(expected=IllegalArgumentException.class)
     public void same_event_cannot_be_added_twice() {
-        final BuildEvent e = e();
+        final BuildEvent e = event();
         
         repo.add(e);
         repo.add(e);
@@ -57,9 +53,9 @@ public class VolatileEventRepositoryTest {
     
     @Test
     public void events_can_be_removed() {
-        final BuildEvent e1 = e();
-        final BuildEvent e2 = e();
-        final BuildEvent e3 = e();
+        final BuildEvent e1 = event();
+        final BuildEvent e2 = event();
+        final BuildEvent e3 = event();
         
         repo.add(e1);
         repo.add(e2);
@@ -77,14 +73,14 @@ public class VolatileEventRepositoryTest {
     
     @Test(expected=IllegalArgumentException.class)
     public void unknown_events_cannot_be_removed() {
-        repo.remove(e());
+        repo.remove(event());
     }
     
     
     @Test
     public void ordering_of_events_is_based_on_id() {
-        final BuildEvent e1 = e();
-        final BuildEvent e2 = e();
+        final BuildEvent e1 = event();
+        final BuildEvent e2 = event();
         
         repo.add(e2);
         repo.add(e1);
@@ -94,9 +90,9 @@ public class VolatileEventRepositoryTest {
     
     @Test
     public void events_newer_than_a_provided_event_can_be_found() {
-        final BuildEvent e1 = e();
-        final BuildEvent e2 = e();
-        final BuildEvent e3 = e();
+        final BuildEvent e1 = event();
+        final BuildEvent e2 = event();
+        final BuildEvent e3 = event();
         
         assertTrue(repo.findNewerThan(-1234).isEmpty());
         assertTrue(repo.findNewerThan(1234).isEmpty());
@@ -112,8 +108,8 @@ public class VolatileEventRepositoryTest {
         assertTrue(repo.findNewerThan(e3.getId()).isEmpty());
         assertTrue(repo.findNewerThan(e3.getId() + 1).isEmpty());
         
-        final BuildEvent e4 = e();
-        final BuildEvent e5 = e();
+        final BuildEvent e4 = event();
+        final BuildEvent e5 = event();
         repo.add(e5);
         
         assertEquals(Arrays.asList(e5), repo.findNewerThan(e4.getId()));
@@ -123,7 +119,7 @@ public class VolatileEventRepositoryTest {
     
     @Test
     public void clients_cannot_mutate_repository_indirectly() {
-        final BuildEvent e = e();
+        final BuildEvent e = event();
         repo.add(e);
         
         repo.list().clear();
@@ -135,8 +131,8 @@ public class VolatileEventRepositoryTest {
     
     @Test
     public void id_of_the_last_event_can_be_retrieved() {
-        final BuildEvent e1 = e();
-        final BuildEvent e2 = e();
+        final BuildEvent e1 = event();
+        final BuildEvent e2 = event();
         
         assertNull(repo.getLastEventId());
         

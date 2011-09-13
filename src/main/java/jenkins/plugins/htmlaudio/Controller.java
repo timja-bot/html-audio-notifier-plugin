@@ -6,8 +6,6 @@ import hudson.model.RootAction;
 import java.io.IOException;
 import java.util.Collection;
 
-import jenkins.model.Jenkins;
-import jenkins.plugins.htmlaudio.HtmlAudioNotifier.PluginDescriptor;
 import jenkins.plugins.htmlaudio.domain.BuildEvent;
 import jenkins.plugins.htmlaudio.domain.BuildEventRepository;
 import jenkins.plugins.htmlaudio.domain.BuildResult;
@@ -15,6 +13,7 @@ import jenkins.plugins.htmlaudio.domain.BuildResult;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
+import org.apache.commons.lang.StringUtils;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
 import org.kohsuke.stapler.export.Flavor;
@@ -31,13 +30,24 @@ public final class Controller implements RootAction {
     
     private static final String PLUGIN_URL = "plugin/html-audio-notifier/";
     private static final String CONTROLLER_URL = "/html-audio";
+
+    private String rootUrl;
+    private BuildEventRepository repository;
+    private Configuration configuration;
     
-    private final BuildEventRepository repository = BuildEventRepository.instance();
-    private PluginDescriptor descriptor;
+    
+    public void setRootUrl(String rootUrl) {
+        this.rootUrl = rootUrl;
+    }
     
     
-    public void setDescriptor(PluginDescriptor descriptor) {
-        this.descriptor = descriptor;
+    public void setRepository(BuildEventRepository repository) {
+        this.repository = repository;
+    }
+    
+    
+    public void setConfiguration(Configuration configuration) {
+        this.configuration = configuration;
     }
     
     
@@ -46,7 +56,16 @@ public final class Controller implements RootAction {
      */
     public void doIsEnabledByDefault(StaplerRequest req, StaplerResponse resp) throws IOException {
         writeJsonResponse(resp,
-            new JSONObject().element("enabled", descriptor.isEnabledByDefault()));
+            isEnabledByDefault());
+    }
+    
+    
+    /*
+     * Package-private for testing.
+     */
+    JSONObject isEnabledByDefault() {
+        return new JSONObject()
+            .element("enabled", configuration.isEnabledByDefault());
     }
     
     
@@ -60,17 +79,21 @@ public final class Controller implements RootAction {
      * Handles requests by clients polling for new sounds to play.
      */
     public void doNext(StaplerRequest req, StaplerResponse resp) throws IOException {
-        final Collection<BuildEvent> events = findEvents(req.getParameter("previous"));
-        final JSONObject result = new JSONObject()
-            .element("currentNotification", getCurrentNotificationId())
-            .element("notifications", createNotificationsArray(events));
-        
-        // TODO do the cleanup if necessary
-        
-        writeJsonResponse(resp, result);
+        writeJsonResponse(resp,
+            next(req.getParameter("previous")));
     }
-
-
+    
+    
+    /*
+     * Package-private for testing.
+     */
+    JSONObject next(String previous) {
+        return new JSONObject()
+            .element("currentNotification", getCurrentNotificationId())
+            .element("notifications", createNotificationsArray(findEvents(previous)));
+    }
+    
+    
     private Collection<BuildEvent> findEvents(String previous) {
         final Long previousEventId = parsePreviousEventId(previous);
         return previousEventId == null
@@ -83,7 +106,7 @@ public final class Controller implements RootAction {
         final Long lastEventId = repository.getLastEventId();
         return lastEventId == null
             ? new JSONObject(true)
-            : lastEventId;
+            : String.valueOf(lastEventId);
     }
     
     
@@ -105,8 +128,9 @@ public final class Controller implements RootAction {
         
         for (BuildEvent e : events) {
             final String url = getSoundUrl(e.getResult());
-            if (url != null) {
-                result.element(url);
+            
+            if (!StringUtils.isBlank(url)) {
+                result.element(toAbsoluteUrl(url));
             }
         }
         
@@ -117,18 +141,14 @@ public final class Controller implements RootAction {
     private String getSoundUrl(BuildResult result) {
         switch (result) {
             case FAILURE:
-                return createAbsoluteSoundUrl(descriptor.getFailureSoundUrl());
+                return configuration.getFailureSoundUrl();
             default:
                 return null;
         }
     }
     
     
-    private String createAbsoluteSoundUrl(String url) {
-        if (url == null) {
-            return null;
-        }
-        
+    private String toAbsoluteUrl(String url) {
         return isAbsolute(url)
             ? url
             : convertToAbsoluteUrl(url);
@@ -141,7 +161,6 @@ public final class Controller implements RootAction {
     
     
     private String convertToAbsoluteUrl(String url) {
-        final String rootUrl = Jenkins.getInstance().getRootUrl();
         return (rootUrl.endsWith("/") ? rootUrl : rootUrl + "/")
             + PLUGIN_URL
             + url;

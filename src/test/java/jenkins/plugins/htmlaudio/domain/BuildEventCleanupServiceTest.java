@@ -1,12 +1,12 @@
 package jenkins.plugins.htmlaudio.domain;
 
+import static jenkins.plugins.htmlaudio.support.DomainObjectFactory.*;
 import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -28,10 +28,10 @@ public class BuildEventCleanupServiceTest {
         final long second = TimeUnit.SECONDS.toMillis(1);
         final long base = System.currentTimeMillis();
         
-        final BuildEvent e1 = e(base);
-        final BuildEvent e2 = e(base - 30 * second);
-        final BuildEvent e3 = e(base - 60 * second);
-        final BuildEvent e4 = e(base - 120 * second);
+        final BuildEvent e1 = event(base);
+        final BuildEvent e2 = event(base - 30 * second);
+        final BuildEvent e3 = event(base - 60 * second);
+        final BuildEvent e4 = event(base - 120 * second);
         
         events.addAll(Arrays.asList(e1, e2, e3, e4));
         
@@ -40,11 +40,6 @@ public class BuildEventCleanupServiceTest {
             removeExpired());
 
         assertEquals(Arrays.asList(e1, e2), events);
-    }
-    
-    
-    private BuildEvent e(long created) {
-        return new BuildEvent(null, new Date(created));
     }
     
     

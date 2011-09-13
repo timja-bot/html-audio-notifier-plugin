@@ -2,6 +2,7 @@ package jenkins.plugins.htmlaudio;
 
 
 import jenkins.model.Jenkins;
+import jenkins.plugins.htmlaudio.domain.BuildEventRepository;
 import net.sf.json.JSONObject;
 
 import org.kohsuke.stapler.StaplerRequest;
@@ -22,7 +23,9 @@ public final class HtmlAudioNotifier extends Plugin implements Describable<HtmlA
     @Override
     public void postInitialize() {
         final Controller c = Jenkins.getInstance().getExtensionList(Controller.class).get(0);
-        c.setDescriptor(getDescriptor());
+        c.setRootUrl(Jenkins.getInstance().getRootUrl());
+        c.setRepository(BuildEventRepository.instance());
+        c.setConfiguration(getDescriptor());
     }
     
     
@@ -32,7 +35,8 @@ public final class HtmlAudioNotifier extends Plugin implements Describable<HtmlA
     
     
     @Extension
-    public static final class PluginDescriptor extends Descriptor<HtmlAudioNotifier> {
+    public static final class PluginDescriptor extends Descriptor<HtmlAudioNotifier>
+            implements Configuration {
         
         private boolean enabledByDefault; // TODO synchronization?
         private String failureSoundUrl;
