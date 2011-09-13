@@ -1,7 +1,6 @@
 
     - the new js-Action
         - expire old sounds..
-        - provide 'last' event-id in all /next-queries
         - testing plz
         
     - HtmlAudioNotifier

@@ -107,6 +107,6 @@ HtmlAudioNotifierClient.prototype = {
 	
 	setPreviousNotification: function(n) {
 		this.prevNotification = n;
-		createCookie("prevHtmlAudioNotification", n, 1); // TODO expire this sucker muuuch sooner, ~5 minutes?
+		createCookie("prevHtmlAudioNotification", n, 1);
 	}
 };
