@@ -1,8 +1,7 @@
-<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler">
+<j:jelly xmlns:j="jelly:core">
     <j:set var="pluginUrl" value="${request.contextPath}/plugin/html-audio-notifier"/>
 	
 	<link rel="stylesheet" type="text/css" href="${pluginUrl}/css/client.css" />
-	<st:bind var="htmlAudioNotifierPlugin" value="${app.getPlugin('html-audio-notifier')}" />
 	<script type="text/javascript" src="${pluginUrl}/scripts/client.js" />
 	<script type="text/javascript" src="${pluginUrl}/scripts/player.js" />
 	<script type="text/javascript" src="${pluginUrl}/scripts/cookies.js" />

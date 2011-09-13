@@ -7,7 +7,8 @@
 	</div>
 	
     <script type="text/javascript">
-        htmlAudioNotifierClient = new HtmlAudioNotifierClient(htmlAudioNotifierPlugin,
+        htmlAudioNotifierClient = new HtmlAudioNotifierClient(
+            '${request.contextPath}/html-audio',
             document.getElementById('htmlAudioNotifierControl'));
 	</script>
 </j:jelly>

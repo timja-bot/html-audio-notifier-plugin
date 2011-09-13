@@ -4,8 +4,8 @@
 var HtmlAudioNotifierClient = Class.create();
 HtmlAudioNotifierClient.prototype = {
 	
-	initialize: function(plugin, uiElement) {
-		this.plugin = plugin;
+	initialize: function(url, uiElement) {
+		this.url = url;
 		this.uiElement = uiElement;
 		this.player = new AudioPlayer();
 		this.executor = null;
@@ -14,16 +14,24 @@ HtmlAudioNotifierClient.prototype = {
 		
 		if (enabled == null) {
 			var that = this;
-			this.plugin.isEnabledByDefault(function(t) {
-				that.enable(t.responseObject());
-			});
+			
+			new Ajax.Request(url + "/isEnabledByDefault", {
+                method: 'post',
+                onSuccess: function(t) {
+                	var enabled = t.responseText.evalJSON(true).enabled;
+                	that.enable(enabled);
+                },
+                onFailure: function() {
+                	that.enable(false);
+                }
+            });
 		} else {
 			this.enable(enabled);
 		}
 	},
 	
 	isEnabled: function() {
-		var val = readCookie("htmlAudioClientEnabled");
+		var val = readCookie("htmlAudioNotificationsEnabled");
 		return val == null
 			? null
 			: val == 'true';
@@ -49,7 +57,7 @@ HtmlAudioNotifierClient.prototype = {
 		this.stop();
 		
 		var that = this;
-		this.executor = new PeriodicalExecuter(function() { that.poll(that) }, 1); // TODO 5?
+		this.executor = new PeriodicalExecuter(function() { that.poll(that) }, 5);
 	},
 
 	stop: function() {
@@ -66,33 +74,43 @@ HtmlAudioNotifierClient.prototype = {
 	},
 
 	storeEnabledState: function(enabled) {
-		createCookie("htmlAudioClientEnabled", enabled, 30);
+		createCookie("htmlAudioNotificationsEnabled", enabled, 30);
 	},
 
 	poll: function(client) {
-		client.plugin.nextSounds(client.getPrevSoundId(), function(t) {
-			var result = t.responseObject();
-			
-			if (!result) {
-				return;
-			}
-			
-			result.sounds.each(function(sound) {
-				client.player.enqueue(sound.src);
-				client.setPrevSoundId(sound.id);
-			});
-		});
+		
+		new Ajax.Request(client.url + "/next", {
+            method: 'post',
+            parameters: { previous: client.getPreviousNotification() },
+            
+            onSuccess: function(t) {
+            	var result = t.responseText.evalJSON(true);
+            	
+    			if (!result) {
+    				return;
+    			}
+    			
+    			// TODO store the last id
+    			
+    			result.sounds.each(function(sound) {
+    				client.player.enqueue(sound.src);
+    				client.setPreviousNotification(sound.id); // TODO remove?
+    			});
+            }
+        });
 	},
 	
-	getPrevSoundId: function() {
-		if (this.prevSoundId === undefined) {
-			this.prevSoundId = readCookie("htmlAudioClientPrevSound");
+	getPreviousNotification: function() {
+		if (this.prevNotification === undefined) {
+			this.prevNotification = readCookie("prevHtmlAudioNotification");
 		}
-		return this.prevSoundId;
+		return this.prevNotification;
 	},
 	
-	setPrevSoundId: function(prevSoundId) {
-		this.prevSoundId = prevSoundId;
-		createCookie("htmlAudioClientPrevSound", prevSoundId, 1); // TODO expire this sucker muuuch sooner, ~5 minutes?
+	setPreviousNotification: function(n) {
+		if (this.prevNotification != n) {
+			this.prevNotification = n;
+			createCookie("prevHtmlAudioNotification", n, 1); // TODO expire this sucker muuuch sooner, ~5 minutes?
+		}
 	}
 };

@@ -1,12 +1,11 @@
 
-    - HtmlAudioNotifier
-        - split out the client-methods stuff into a dedicated class, (Action)?
-        - create some tests on the plugin, config-load&save etc
-        
     - the new js-Action
         - expire old sounds..
-        - hudson restart messes up the stapler-urls...
-        - handle StaplerRequests direcly.. 
+        - provide 'last' event-id in all /next-queries
+        - testing plz
+        
+    - HtmlAudioNotifier
+        - create some tests on the plugin, config-load&save etc
         
 	- config
 	   - test sounds, callbacks for 'playing' & 'onerror'
