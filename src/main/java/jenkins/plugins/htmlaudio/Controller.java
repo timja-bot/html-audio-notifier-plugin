@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.Collection;
 
 import jenkins.plugins.htmlaudio.domain.BuildEvent;
+import jenkins.plugins.htmlaudio.domain.BuildEventCleanupService;
 import jenkins.plugins.htmlaudio.domain.BuildEventRepository;
 import jenkins.plugins.htmlaudio.domain.BuildResult;
 
@@ -33,6 +34,7 @@ public final class Controller implements RootAction {
 
     private String rootUrl;
     private BuildEventRepository repository;
+    private BuildEventCleanupService cleanupService;
     private Configuration configuration;
     
     
@@ -43,6 +45,11 @@ public final class Controller implements RootAction {
     
     public void setRepository(BuildEventRepository repository) {
         this.repository = repository;
+    }
+    
+    
+    public void setCleanupService(BuildEventCleanupService cleanupService) {
+        this.cleanupService = cleanupService;
     }
     
     
@@ -88,9 +95,16 @@ public final class Controller implements RootAction {
      * Package-private for testing.
      */
     JSONObject next(String previous) {
+        removeExpiredEvents();
+        
         return new JSONObject()
             .element("currentNotification", getCurrentNotificationId())
             .element("notifications", createNotificationsArray(findEvents(previous)));
+    }
+    
+    
+    private void removeExpiredEvents() {
+        cleanupService.removeExpiredEvents(repository);
     }
     
     

@@ -1,8 +1,4 @@
 
-    - the new js-Action
-        - expire old sounds..
-        - testing plz
-        
     - HtmlAudioNotifier
         - create some tests on the plugin, config-load&save etc
         

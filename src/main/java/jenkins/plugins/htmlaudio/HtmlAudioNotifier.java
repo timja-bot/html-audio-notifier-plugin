@@ -2,6 +2,7 @@ package jenkins.plugins.htmlaudio;
 
 
 import jenkins.model.Jenkins;
+import jenkins.plugins.htmlaudio.domain.BuildEventCleanupService;
 import jenkins.plugins.htmlaudio.domain.BuildEventRepository;
 import net.sf.json.JSONObject;
 
@@ -22,13 +23,19 @@ public final class HtmlAudioNotifier extends Plugin implements Describable<HtmlA
     
     @Override
     public void postInitialize() {
-        final Controller c = Jenkins.getInstance().getExtensionList(Controller.class).get(0);
-        c.setRootUrl(Jenkins.getInstance().getRootUrl());
-        c.setRepository(BuildEventRepository.instance());
-        c.setConfiguration(getDescriptor());
+        initializeController();
     }
     
     
+    private void initializeController() {
+        final Controller c = Jenkins.getInstance().getExtensionList(Controller.class).get(0);
+        c.setRootUrl(Jenkins.getInstance().getRootUrl());
+        c.setRepository(BuildEventRepository.instance());
+        c.setCleanupService(BuildEventCleanupService.instance());
+        c.setConfiguration(getDescriptor());
+    }
+
+
     public PluginDescriptor getDescriptor() {
         return Jenkins.getInstance().getDescriptorByType(PluginDescriptor.class);
     }

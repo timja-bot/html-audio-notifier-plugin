@@ -3,7 +3,10 @@ package jenkins.plugins.htmlaudio;
 import static jenkins.plugins.htmlaudio.support.DomainObjectFactory.*;
 import static org.junit.Assert.*;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import jenkins.plugins.htmlaudio.domain.BuildEvent;
+import jenkins.plugins.htmlaudio.domain.BuildEventCleanupService;
 import jenkins.plugins.htmlaudio.domain.BuildEventRepository;
 import jenkins.plugins.htmlaudio.domain.impl.VolatileBuildEventRepository;
 
@@ -34,6 +37,12 @@ public class ControllerTest {
             }
             public String getFailureSoundUrl() {
                 return failureSoundUrl;
+            }
+        });
+        
+        c.setCleanupService(new BuildEventCleanupService() {
+            @Override public void removeExpiredEvents(BuildEventRepository repository) {
+                // empty
             }
         });
     }
@@ -172,5 +181,22 @@ public class ControllerTest {
         c.setRootUrl("http://root/");
         assertEquals("http://root/plugin/html-audio-notifier/rel",
             ((JSONArray)c.next(null).get("notifications")).get(0).toString());
+    }
+    
+    
+    @Test
+    public void expired_events_are_automatically_removed() {
+        final AtomicBoolean cleanedUp = new AtomicBoolean();
+        
+        c.setCleanupService(new BuildEventCleanupService() {
+            @Override public void removeExpiredEvents(BuildEventRepository repository) {
+                assertSame(ControllerTest.this.repo, repository);
+                cleanedUp.set(true);
+            }
+        });
+        
+        assertFalse(cleanedUp.get());
+        c.next(null);
+        assertTrue(cleanedUp.get());
     }
 }
