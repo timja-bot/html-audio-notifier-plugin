@@ -1,27 +1,25 @@
 
-	- config
-	   - test sounds, callbacks for 'playing' & 'onerror'
-	   - sjekk canPlayType crapen og vis i GUI, html-audio capable browser.., muligens på footer as well?
-        /*if (audioElement.canPlayType) {
-            alert('canPlay');
-        }
-       - clean up the config-pages, texts etc
-        
-	- remove console.log stuff from js
 
+    - longpoll??
+    
 	- pom-TODO's	
 		- new jenkins-versions / name & description (displayed in the installed plugins page..)
-		
-	- longpoll??
-    
+		- index.jelly, add some links regarding the 
+
+	- https://wiki.jenkins-ci.org/display/JENKINS/Jelly+and+XSS+prevention
 	
-	- README
 	- config/help etc
 		- per field help/doc
 		    <f:entry ...
 		      help="/plugin/simple-sound-notifier/help-xx.html">
 		      
+    - README
+		      
+     - help-globalConfig.html?
+     
     - tab2spaces, goddamnit eclipse!
+    
+    - remove console.log stuff from js 
     
 	- license-information in the descriptor-files?
 		- tango icons
@@ -32,17 +30,6 @@
 	- jenkins-plugin, simple-sound-notifier
 		https://wiki.jenkins-ci.org/display/JENKINS/Extend+Jenkins
 		
-		https://wiki.jenkins-ci.org/display/JENKINS/Internationalization
-		
-		https://wiki.jenkins-ci.org/display/JENKINS/Jelly+and+XSS+prevention <- raw html / escaping etc..
-		
 		https://wiki.jenkins-ci.org/display/JENKINS/Unit+Test
 		
         https://wiki.jenkins-ci.org/display/JENKINS/Hosting+Plugins
-        https://wiki.jenkins-ci.org/display/JENKINS/Plugin+tutorial
-        
-        https://wiki.jenkins-ci.org/display/JENKINS/Architecture
-        https://wiki.jenkins-ci.org/display/JENKINS/Extension+points
-        
-        https://wiki.jenkins-ci.org/display/JENKINS/AJAX+with+JavaScript+proxy
-        

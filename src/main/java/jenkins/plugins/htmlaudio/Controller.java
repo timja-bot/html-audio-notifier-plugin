@@ -181,6 +181,16 @@ public final class Controller implements RootAction {
     }
     
     
+    /**
+     * Converts an URL to an absolute URL if necessary. Used by the configuration-page for testing
+     * sounds in the browser.
+     */
+    public void doToAbsoluteUrl(StaplerRequest req, StaplerResponse resp) throws IOException {
+        resp.setContentType("text/plain");
+        resp.getWriter().print(toAbsoluteUrl(req.getParameter("url")));
+    }
+    
+    
     public String getUrlName() {
         return CONTROLLER_URL;
     }
