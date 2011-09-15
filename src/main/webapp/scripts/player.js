@@ -98,5 +98,5 @@ function audioEndedListener(that, reason) {
 window.console || (console = {log: function() {}}) // stub console.log if necessary
 
 function log(message) {
-    console.log('htmlAudioNotifier: ' + message);
+    console.log('HtmlAudioPlayer: ' + message);
 }
