@@ -1,38 +1,13 @@
 
-    - longpoll??
-    
-    - rootUrl må hentes on-demand...
-    
-    - cleanup-svc må kjøres på timer...
-    
-	- pom-TODO's	
-		- new jenkins-versions / name & description (displayed in the installed plugins page..)
-		- index.jelly, add some links regarding the 
-
-	- https://wiki.jenkins-ci.org/display/JENKINS/Jelly+and+XSS+prevention
 	
-	- config/help etc
-		- per field help/doc
-		    <f:entry ...
-		      help="/plugin/simple-sound-notifier/help-xx.html">
-		      
+	- tab2spaces, goddamnit eclipse!
     - README
-		      
-    - help-globalConfig.html?
+    
+    https://wiki.jenkins-ci.org/display/JENKINS/Hosting+Plugins
+
+    Remaining stuff
+    ----------------------------------------------------------------------------------------------------    
+    - long polling, configurable or maybe as default?
+    - the server's root-url is dynamic, Controller should fetch it on-demand
+    - the cleanup-service must be invoked by a timer, possible memory leak if no js-clients are polling..
      
-    - tab2spaces, goddamnit eclipse!
-    
-    - remove console.log stuff from js 
-    
-	- license-information in the descriptor-files?
-		- tango icons
-		- wav files...
-		
-	- remove the bin-launchers, maybe put some more documentation regarding the basic plugin-dev into README?
-	
-	- jenkins-plugin, simple-sound-notifier
-		https://wiki.jenkins-ci.org/display/JENKINS/Extend+Jenkins
-		
-		https://wiki.jenkins-ci.org/display/JENKINS/Unit+Test
-		
-        https://wiki.jenkins-ci.org/display/JENKINS/Hosting+Plugins
