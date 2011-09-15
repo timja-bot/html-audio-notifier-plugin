@@ -1,6 +1,9 @@
 
-
     - longpoll??
+    
+    - rootUrl må hentes on-demand...
+    
+    - cleanup-svc må kjøres på timer...
     
 	- pom-TODO's	
 		- new jenkins-versions / name & description (displayed in the installed plugins page..)
@@ -15,7 +18,7 @@
 		      
     - README
 		      
-     - help-globalConfig.html?
+    - help-globalConfig.html?
      
     - tab2spaces, goddamnit eclipse!
     

@@ -20,12 +20,13 @@ AudioPlayer.prototype = {
 		// register event-listeners for playing enqueued sounds
 		['ended', 'error'].each(function(e) {
 			that.player.addEventListener(e,
-				function() { audioEndedListener(that, e); },
+				function() { audioEndedListener(that, e) },
 				false);
 		});
 	},
 	
 	enqueue: function(source) {
+		log('enqueued ' + source);
 		this.queue.push(source);
 		this.playNext();
 	},
@@ -38,12 +39,15 @@ AudioPlayer.prototype = {
 		
 		this.playing = true;
 		this.registerTimedRestart();
-		this.player.setAttribute('src', this.queue.shift());
-		this.player.load();
+		
+		var src = this.queue.shift();
+		log('loading ' + src);
+		
+		this.player.setAttribute('src', src);
 	},
 	
 	onLoaded: function() {
-		console.log('> playing ' + this.player.getAttribute('src')); // TODO remove me
+		log('playing ' + this.player.getAttribute('src'));
 		this.clearTimedRestart();
 		this.player.play();
 	},
@@ -57,6 +61,7 @@ AudioPlayer.prototype = {
 		
 		var that = this;
 		this.timedRestart = setTimeout(function() {
+			log('> timed reset, load failed or timed out');
 			that.playing = false;
 			that.playNext();
 		}, 20000);
@@ -68,7 +73,7 @@ AudioPlayer.prototype = {
 			this.timedRestart = null;
 		}
 	}
-};
+}
 
 
 /*
@@ -77,9 +82,21 @@ AudioPlayer.prototype = {
 function audioEndedListener(that, reason) {
 	that.playing = false;
 	that.clearTimedRestart();
+	
+	log(reason);
 
 	// play next from queue, but make sure the current event has been fully processed.
 	setTimeout(function() {
 		that.playNext();
 	}, 0);
+}
+
+
+/*
+ * Logs messages to the javascript-console.
+ */
+window.console || (console={log:function(){}}) // stub console.log if necessary
+
+function log(message) {
+	console.log('htmlAudioNotifier: ' + message);
 }
