@@ -1,10 +1,4 @@
 	
-    - README
-    
-    https://wiki.jenkins-ci.org/display/JENKINS/Hosting+Plugins
-
-    Remaining stuff
-    ----------------------------------------------------------------------------------------------------    
     - long polling, configurable or maybe as default?
     - the server's root-url is dynamic, Controller should fetch it on-demand
     - the cleanup-service must be invoked by a timer, possible memory leak if no js-clients are polling..
