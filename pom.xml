@@ -13,6 +13,20 @@
   <packaging>hpi</packaging>
   
   <name>HTML Audio Notifier</name>
+  
+  <scm>
+    <connection>scm:git:git://github.com/jenkinsci/html-audio-notifier-plugin.git</connection>
+    <developerConnection>scm:git:git@github.com:jenkinsci/html-audio-notifier-plugin.git</developerConnection>
+    <url>https://github.com/jenkinsci/html-audio-notifier-plugin</url>
+  </scm>
+  
+  <developers>
+    <developer>
+      <id>larshvile</id>
+      <name>Lars Hvile</name>
+      <email>lars@hulte.net</email>
+    </developer>
+  </developers>
 
   <repositories>
     <repository>
