@@ -1,6 +1,8 @@
-package jenkins.plugins.htmlaudio;
+package jenkins.plugins.htmlaudio.app;
 
 import jenkins.model.Jenkins;
+import jenkins.plugins.htmlaudio.app.core.Configuration;
+import jenkins.plugins.htmlaudio.app.core.ServerUrlResolver;
 import jenkins.plugins.htmlaudio.domain.BuildEventCleanupService;
 import jenkins.plugins.htmlaudio.domain.BuildEventRepository;
 import net.sf.json.JSONObject;

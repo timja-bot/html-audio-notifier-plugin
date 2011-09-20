@@ -1,4 +1,4 @@
-package jenkins.plugins.htmlaudio;
+package jenkins.plugins.htmlaudio.app;
 
 import hudson.Extension;
 import hudson.model.RootAction;
@@ -6,6 +6,8 @@ import hudson.model.RootAction;
 import java.io.IOException;
 import java.util.Collection;
 
+import jenkins.plugins.htmlaudio.app.core.Configuration;
+import jenkins.plugins.htmlaudio.app.core.ServerUrlResolver;
 import jenkins.plugins.htmlaudio.domain.BuildEvent;
 import jenkins.plugins.htmlaudio.domain.BuildEventCleanupService;
 import jenkins.plugins.htmlaudio.domain.BuildEventRepository;

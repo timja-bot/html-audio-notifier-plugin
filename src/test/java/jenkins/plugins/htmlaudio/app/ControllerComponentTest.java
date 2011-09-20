@@ -1,10 +1,12 @@
-package jenkins.plugins.htmlaudio;
+package jenkins.plugins.htmlaudio.app;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
+
+import jenkins.plugins.htmlaudio.app.HtmlAudioNotifierPlugin;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpMethod;

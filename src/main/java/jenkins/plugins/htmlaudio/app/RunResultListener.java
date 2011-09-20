@@ -1,4 +1,4 @@
-package jenkins.plugins.htmlaudio;
+package jenkins.plugins.htmlaudio.app;
 
 import java.util.ArrayList;
 import java.util.Collection;

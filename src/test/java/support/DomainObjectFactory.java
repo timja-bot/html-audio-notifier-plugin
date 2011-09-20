@@ -1,4 +1,4 @@
-package jenkins.plugins.htmlaudio.support;
+package support;
 
 import java.util.Date;
 

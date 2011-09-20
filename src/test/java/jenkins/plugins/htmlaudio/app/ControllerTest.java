@@ -1,10 +1,13 @@
-package jenkins.plugins.htmlaudio;
+package jenkins.plugins.htmlaudio.app;
 
-import static jenkins.plugins.htmlaudio.support.DomainObjectFactory.*;
 import static org.junit.Assert.*;
+import static support.DomainObjectFactory.*;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import jenkins.plugins.htmlaudio.app.Controller;
+import jenkins.plugins.htmlaudio.app.core.Configuration;
+import jenkins.plugins.htmlaudio.app.core.ServerUrlResolver;
 import jenkins.plugins.htmlaudio.domain.BuildEvent;
 import jenkins.plugins.htmlaudio.domain.BuildEventCleanupService;
 import jenkins.plugins.htmlaudio.domain.BuildEventRepository;

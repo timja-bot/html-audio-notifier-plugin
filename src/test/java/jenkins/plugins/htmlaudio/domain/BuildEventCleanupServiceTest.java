@@ -1,7 +1,7 @@
 package jenkins.plugins.htmlaudio.domain;
 
-import static jenkins.plugins.htmlaudio.support.DomainObjectFactory.*;
 import static org.junit.Assert.*;
+import static support.DomainObjectFactory.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;

@@ -1,6 +1,7 @@
-package jenkins.plugins.htmlaudio;
+package jenkins.plugins.htmlaudio.app;
 
-import jenkins.plugins.htmlaudio.HtmlAudioNotifierPlugin.PluginDescriptor;
+import jenkins.plugins.htmlaudio.app.HtmlAudioNotifierPlugin;
+import jenkins.plugins.htmlaudio.app.HtmlAudioNotifierPlugin.PluginDescriptor;
 
 import org.junit.internal.runners.JUnit38ClassRunner;
 import org.junit.runner.RunWith;

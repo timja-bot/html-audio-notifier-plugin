@@ -1,4 +1,4 @@
-package jenkins.plugins.htmlaudio;
+package jenkins.plugins.htmlaudio.app.core;
 
 
 /**
