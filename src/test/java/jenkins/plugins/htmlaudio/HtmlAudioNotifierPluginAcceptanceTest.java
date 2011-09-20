@@ -1,4 +1,4 @@
-package jenkins.plugins.htmlaudio.app;
+package jenkins.plugins.htmlaudio;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -7,6 +7,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 
 import jenkins.plugins.htmlaudio.app.HtmlAudioNotifierPlugin;
+import jenkins.plugins.htmlaudio.app.HtmlAudioNotifierPlugin.PluginDescriptor;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpMethod;
@@ -16,17 +17,63 @@ import org.junit.internal.runners.JUnit38ClassRunner;
 import org.junit.runner.RunWith;
 import org.jvnet.hudson.test.HudsonTestCase;
 
+import com.gargoylesoftware.htmlunit.html.HtmlCheckBoxInput;
+import com.gargoylesoftware.htmlunit.html.HtmlForm;
+import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
 
-// TODO docme
+
+/**
+ * Contains component-/acceptance-tests using a running Jenkins instance. These tests were originally 
+ * in multiple test-files, but {@link HudsonTestCase} seems to have some issues with doing proper cleanup / 
+ * reset between tests, so they're all embedded in this class now. 
+ * 
+ * @author Lars Hvile
+ */
 @RunWith(JUnit38ClassRunner.class)
-public class ControllerComponentTest extends HudsonTestCase { // TODO put in .acceptance?
+public class HtmlAudioNotifierPluginAcceptanceTest extends HudsonTestCase {
     
     private final HttpClient httpClient = new HttpClient();
     
     
-    /**
-     * Make sure that the relative2absolute url conversion works, regression-test from the 1.430 upgrade.
-     */
+    public void test_configuration_does_not_change_by_accident() throws Exception {
+        final PluginDescriptor config = getConfig();
+        
+        // value-set #1
+        config.setEnabledByDefault(true);
+        config.setFailureSoundUrl("f");
+        configRoundtrip();
+        assertTrue(config.isEnabledByDefault());
+        assertEquals("f", config.getFailureSoundUrl());
+        
+        // value-set #2
+        config.setEnabledByDefault(false);
+        config.setFailureSoundUrl(null);
+        configRoundtrip();
+        assertFalse(config.isEnabledByDefault());
+        assertEquals(null, config.getFailureSoundUrl());
+    }
+    
+    
+    public void test_configuration_can_be_changed() throws Exception {
+        final PluginDescriptor config = getConfig();
+        
+        config.setEnabledByDefault(false);
+        config.setFailureSoundUrl(null);
+        
+        HtmlForm form = createWebClient()
+            .goTo("configure")
+            .getFormByName("config");
+
+        ((HtmlCheckBoxInput)form.getInputByName("htmlAudioEnabledByDefault")).setChecked(true);
+        ((HtmlTextInput)form.getInputByName("htmlAudioFailureSoundUrl")).setValueAttribute("changed");
+        
+        submit(form);
+        
+        assertTrue(config.isEnabledByDefault());
+        assertEquals("changed", config.getFailureSoundUrl());
+    }
+    
+    
     public void test_controller_converts_to_absolute_urls() {
         final String response = invoke("toAbsoluteUrl",
                 "url", "a-relative-url");
@@ -43,12 +90,19 @@ public class ControllerComponentTest extends HudsonTestCase { // TODO put in .ac
     }
     
     
+    // TODO /next returns new sounds when builds build-events are triggered...
+    
+    
     private void enable(boolean enabled) {
-        jenkins.getPlugin(HtmlAudioNotifierPlugin.class).getDescriptor().setEnabledByDefault(enabled);
+        getConfig().setEnabledByDefault(enabled);
     }
     
     
-    // TODO util-stuff, shared by .acceptance tests??
+    private PluginDescriptor getConfig() {
+        return jenkins.getPlugin(HtmlAudioNotifierPlugin.class).getDescriptor();
+    }
+    
+    
     private String invoke(String action, String... parameters) {
         try {
             final HttpMethod request = createRequest(action,
