@@ -24,13 +24,20 @@ public class ControllerTest {
     private final Controller c = new Controller();
     private final BuildEventRepository repo = new VolatileBuildEventRepository();
     
+    private String rootUrl = "http://root/";
     private boolean enabledByDefault = false;
     private String failureSoundUrl = "f";
     
     
     {
-        c.setRootUrl("http://root");
+        c.setServerUrlResolver(new ServerUrlResolver() {
+            public String getRootUrl() {
+                return rootUrl;
+            }
+        });
+        
         c.setRepository(repo);
+        
         c.setConfiguration(new Configuration() {
             public boolean isEnabledByDefault() {
                 return enabledByDefault;
@@ -174,12 +181,7 @@ public class ControllerTest {
         addEvent();
         failureSoundUrl = "rel";
         
-        c.setRootUrl("http://root");
-        assertEquals("http://root/plugin/html-audio-notifier/rel",
-            ((JSONArray)c.next(null).get("notifications")).get(0).toString());
-        
-        c.setRootUrl("http://root/");
-        assertEquals("http://root/plugin/html-audio-notifier/rel",
+        assertEquals(rootUrl + "plugin/html-audio-notifier/rel",
             ((JSONArray)c.next(null).get("notifications")).get(0).toString());
     }
     

@@ -29,10 +29,15 @@ public final class HtmlAudioNotifierPlugin extends Plugin implements Describable
     
     private void initializeController() {
         final Controller c = Jenkins.getInstance().getExtensionList(Controller.class).get(0);
-        c.setRootUrl(Jenkins.getInstance().getRootUrl());
         c.setRepository(BuildEventRepository.instance());
         c.setCleanupService(BuildEventCleanupService.instance());
         c.setConfiguration(getDescriptor());
+        
+        c.setServerUrlResolver(new ServerUrlResolver() {
+            public String getRootUrl() {
+                return Jenkins.getInstance().getRootUrl();
+            }
+        });
     }
 
 

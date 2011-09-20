@@ -1,5 +1,7 @@
 	
+    - acceptance test for plugin, fail a job + invoke /next etc..
+    - package cleanup
     - long polling, configurable or maybe as default?
-    - the server's root-url is dynamic, Controller should fetch it on-demand
     - the cleanup-service must be invoked by a timer, possible memory leak if no js-clients are polling..
+    - css forgery (.crumb) applies to all POST requests? Probably breaks the current javascript POSTing..
      

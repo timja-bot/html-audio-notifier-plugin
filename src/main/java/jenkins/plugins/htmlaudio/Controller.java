@@ -32,14 +32,14 @@ public final class Controller implements RootAction {
     private static final String PLUGIN_URL = "plugin/html-audio-notifier/";
     private static final String CONTROLLER_URL = "/html-audio";
 
-    private String rootUrl;
+    private ServerUrlResolver serverUrlResolver;
     private BuildEventRepository repository;
     private BuildEventCleanupService cleanupService;
     private Configuration configuration;
     
     
-    public void setRootUrl(String rootUrl) {
-        this.rootUrl = rootUrl;
+    public void setServerUrlResolver(ServerUrlResolver serverUrlResolver) {
+        this.serverUrlResolver = serverUrlResolver;
     }
     
     
@@ -174,10 +174,9 @@ public final class Controller implements RootAction {
     }
     
     
-    private String convertToAbsoluteUrl(String url) {
-        return (rootUrl.endsWith("/") ? rootUrl : rootUrl + "/")
-            + PLUGIN_URL
-            + url;
+    private String convertToAbsoluteUrl(String relativeUrl) {
+        return serverUrlResolver.getRootUrl()
+                + PLUGIN_URL + relativeUrl;
     }
     
     
