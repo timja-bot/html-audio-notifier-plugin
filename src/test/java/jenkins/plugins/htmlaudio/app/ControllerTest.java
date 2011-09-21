@@ -51,7 +51,7 @@ public class ControllerTest {
         });
         
         c.setCleanupService(new BuildEventCleanupService() {
-            @Override public void removeExpiredEvents(BuildEventRepository repository) {
+            public void removeExpiredEvents(BuildEventRepository repository) {
                 // empty
             }
         });
@@ -194,7 +194,7 @@ public class ControllerTest {
         final AtomicBoolean cleanedUp = new AtomicBoolean();
         
         c.setCleanupService(new BuildEventCleanupService() {
-            @Override public void removeExpiredEvents(BuildEventRepository repository) {
+            public void removeExpiredEvents(BuildEventRepository repository) {
                 assertSame(ControllerTest.this.repo, repository);
                 cleanedUp.set(true);
             }

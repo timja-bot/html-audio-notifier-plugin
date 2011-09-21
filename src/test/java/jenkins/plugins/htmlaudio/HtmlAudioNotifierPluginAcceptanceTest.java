@@ -109,15 +109,22 @@ public class HtmlAudioNotifierPluginAcceptanceTest extends HudsonTestCase {
     
     
     public void test_build_events_are_exposed_to_clients() {
-        final String failureSound = getConfig().getFailureSoundUrl();
-
-        assertFalse("no sounds were supposed to be played",
-                invoke("next").contains(failureSound));
         
+        assertSoundPlayed(false);
         failSomeBuild();
+        assertSoundPlayed(true);
+    }
+    
+    
+    private void assertSoundPlayed(boolean played) {
+        final String failureSound = getConfig().getFailureSoundUrl();
+        final String result = invoke("next");
         
-        assertTrue("expected the failure-sound to be played",
-                invoke("next").contains(failureSound));
+        assertEquals((played
+                ? "expected the failure-sound to be played"
+                : "no sounds were supposed to be played") + ", result: " + result,
+            played,
+            result.contains(failureSound));
     }
     
     

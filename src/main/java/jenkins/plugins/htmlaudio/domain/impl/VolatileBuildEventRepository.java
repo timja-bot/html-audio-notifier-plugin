@@ -14,7 +14,7 @@ import jenkins.plugins.htmlaudio.domain.BuildEventRepository;
  * 
  * @author Lars Hvile
  */
-public final class VolatileBuildEventRepository extends BuildEventRepository {
+public final class VolatileBuildEventRepository implements BuildEventRepository {
    
     private final Object mutex = new Object();
     private final List<Long> index = new ArrayList<Long>();
@@ -95,7 +95,6 @@ public final class VolatileBuildEventRepository extends BuildEventRepository {
     }
     
     
-    @Override
     public Long getLastEventId() {
         synchronized (mutex) {
             return index.isEmpty()

@@ -10,9 +10,13 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import jenkins.plugins.htmlaudio.domain.impl.DefaultBuildEventCleanupService;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+
+import support.BuildEventRepositoryAdapter;
 
 
 @RunWith(JUnit4.class)
@@ -45,7 +49,7 @@ public class BuildEventCleanupServiceTest {
     
     private List<BuildEvent> removeExpired() {
         try {
-            BuildEventCleanupService.instance().removeExpiredEvents(repo);
+            new DefaultBuildEventCleanupService().removeExpiredEvents(repo);
             return new ArrayList<BuildEvent>(removed);
         } finally {
             events.removeAll(removed);
@@ -54,7 +58,7 @@ public class BuildEventCleanupServiceTest {
     }
     
     
-    private class MockRepo extends BuildEventRepository {
+    private class MockRepo extends BuildEventRepositoryAdapter {
         
         public void remove(BuildEvent event) {
             removed.add(event);
@@ -62,19 +66,6 @@ public class BuildEventCleanupServiceTest {
 
         public Collection<BuildEvent> list() {
             return Collections.unmodifiableList(events);
-        }
-
-        public void add(BuildEvent event) {
-            throw new UnsupportedOperationException();
-        }
-
-        public Collection<BuildEvent> findNewerThan(long buildEventId) {
-            throw new UnsupportedOperationException();
-        }
-        
-        @Override
-        public Long getLastEventId() {
-            throw new UnsupportedOperationException();
         }
     }
 }

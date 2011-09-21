@@ -5,6 +5,8 @@ import jenkins.plugins.htmlaudio.app.util.Configuration;
 import jenkins.plugins.htmlaudio.app.util.ServerUrlResolver;
 import jenkins.plugins.htmlaudio.domain.BuildEventCleanupService;
 import jenkins.plugins.htmlaudio.domain.BuildEventRepository;
+import jenkins.plugins.htmlaudio.domain.impl.DefaultBuildEventCleanupService;
+import jenkins.plugins.htmlaudio.domain.impl.VolatileBuildEventRepository;
 import net.sf.json.JSONObject;
 
 import org.apache.commons.lang.StringUtils;
@@ -23,16 +25,21 @@ import hudson.model.Descriptor;
  */
 public final class HtmlAudioNotifierPlugin extends Plugin implements Describable<HtmlAudioNotifierPlugin> {
     
+    private final BuildEventRepository buildEventRepo = new VolatileBuildEventRepository();
+    private final BuildEventCleanupService cleanupService = new DefaultBuildEventCleanupService();
+    
+    
     @Override
     public void postInitialize() {
         initializeController();
+        initializeRunResultListener();
     }
-    
-    
+
+
     private void initializeController() {
-        final Controller c = Jenkins.getInstance().getExtensionList(Controller.class).get(0);
-        c.setRepository(BuildEventRepository.instance());
-        c.setCleanupService(BuildEventCleanupService.instance());
+        final Controller c = getComponent(Controller.class);
+        c.setRepository(buildEventRepo);
+        c.setCleanupService(cleanupService);
         c.setConfiguration(getDescriptor());
         
         c.setServerUrlResolver(new ServerUrlResolver() {
@@ -40,6 +47,17 @@ public final class HtmlAudioNotifierPlugin extends Plugin implements Describable
                 return Jenkins.getInstance().getRootUrl();
             }
         });
+    }
+    
+    
+    private <T> T getComponent(Class<T> type) {
+        return Jenkins.getInstance().getExtensionList(type).get(0);
+    }
+    
+    
+    private void initializeRunResultListener() {
+        final RunResultListener r = getComponent(RunResultListener.class);
+        r.setRepository(buildEventRepo);
     }
 
 

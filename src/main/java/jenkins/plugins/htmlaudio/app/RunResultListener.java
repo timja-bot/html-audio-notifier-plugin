@@ -25,7 +25,12 @@ public final class RunResultListener extends RunListener<Run<?, ?>> {
     
     private static final Logger logger = Logger.getLogger(RunResultListener.class.getName());
     
-    private final BuildEventRepository repository = BuildEventRepository.instance();
+    private BuildEventRepository repository;
+    
+    
+    public void setRepository(BuildEventRepository repository) {
+        this.repository = repository;
+    }
     
     
     @Override

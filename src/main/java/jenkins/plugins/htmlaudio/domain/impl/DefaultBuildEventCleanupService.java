@@ -10,7 +10,7 @@ import jenkins.plugins.htmlaudio.domain.BuildEventRepository;
 /**
  * @author Lars Hvile
  */
-public class DefaultBuildEventCleanupService extends BuildEventCleanupService {
+public class DefaultBuildEventCleanupService implements BuildEventCleanupService {
     
     private static final long MAX_AGE_MS = TimeUnit.MINUTES.toMillis(1);
     
@@ -24,8 +24,8 @@ public class DefaultBuildEventCleanupService extends BuildEventCleanupService {
             }
         }
     }
-
-
+    
+    
     private boolean tooOld(BuildEvent e) {
         return e.getAgeInMs() >= MAX_AGE_MS;
     }
