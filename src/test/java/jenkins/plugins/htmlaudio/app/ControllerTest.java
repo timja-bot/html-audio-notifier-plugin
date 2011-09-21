@@ -6,8 +6,8 @@ import static support.DomainObjectFactory.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import jenkins.plugins.htmlaudio.app.Controller;
-import jenkins.plugins.htmlaudio.app.core.Configuration;
-import jenkins.plugins.htmlaudio.app.core.ServerUrlResolver;
+import jenkins.plugins.htmlaudio.app.util.Configuration;
+import jenkins.plugins.htmlaudio.app.util.ServerUrlResolver;
 import jenkins.plugins.htmlaudio.domain.BuildEvent;
 import jenkins.plugins.htmlaudio.domain.BuildEventCleanupService;
 import jenkins.plugins.htmlaudio.domain.BuildEventRepository;

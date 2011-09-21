@@ -1,4 +1,4 @@
-package jenkins.plugins.htmlaudio.app.core;
+package jenkins.plugins.htmlaudio.app.util;
 
 import jenkins.model.Jenkins;
 
