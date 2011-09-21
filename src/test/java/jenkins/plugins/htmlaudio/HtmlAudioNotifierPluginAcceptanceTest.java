@@ -1,5 +1,12 @@
 package jenkins.plugins.htmlaudio;
 
+import hudson.Launcher;
+import hudson.model.AbstractBuild;
+import hudson.model.BuildListener;
+import hudson.model.FreeStyleBuild;
+import hudson.model.FreeStyleProject;
+import hudson.model.Result;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +23,7 @@ import org.apache.commons.httpclient.methods.PostMethod;
 import org.junit.internal.runners.JUnit38ClassRunner;
 import org.junit.runner.RunWith;
 import org.jvnet.hudson.test.HudsonTestCase;
+import org.jvnet.hudson.test.TestBuilder;
 
 import com.gargoylesoftware.htmlunit.html.HtmlCheckBoxInput;
 import com.gargoylesoftware.htmlunit.html.HtmlForm;
@@ -51,6 +59,11 @@ public class HtmlAudioNotifierPluginAcceptanceTest extends HudsonTestCase {
         configRoundtrip();
         assertFalse(config.isEnabledByDefault());
         assertEquals(null, config.getFailureSoundUrl());
+    }
+    
+    
+    private PluginDescriptor getConfig() {
+        return jenkins.getPlugin(HtmlAudioNotifierPlugin.class).getDescriptor();
     }
     
     
@@ -90,16 +103,40 @@ public class HtmlAudioNotifierPluginAcceptanceTest extends HudsonTestCase {
     }
     
     
-    // TODO /next returns new sounds when builds build-events are triggered...
-    
-    
     private void enable(boolean enabled) {
         getConfig().setEnabledByDefault(enabled);
     }
     
     
-    private PluginDescriptor getConfig() {
-        return jenkins.getPlugin(HtmlAudioNotifierPlugin.class).getDescriptor();
+    public void test_build_events_are_exposed_to_clients() {
+        final String failureSound = getConfig().getFailureSoundUrl();
+
+        assertFalse("no sounds were supposed to be played",
+                invoke("next").contains(failureSound));
+        
+        failSomeBuild();
+        
+        assertTrue("expected the failure-sound to be played",
+                invoke("next").contains(failureSound));
+    }
+    
+    
+    private void failSomeBuild() {
+        try {
+            final FreeStyleProject project = createFreeStyleProject();
+            
+            project.getBuildersList().add(new TestBuilder() {
+                public boolean perform(AbstractBuild<?, ?> build, Launcher launcher, BuildListener listener) {
+                    build.setResult(Result.FAILURE);
+                    return false;
+                }
+            });
+            
+            final FreeStyleBuild result = project.scheduleBuild2(0).get();
+            assertEquals(Result.FAILURE, result.getResult());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
     
     
