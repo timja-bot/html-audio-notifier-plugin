@@ -20,4 +20,5 @@ mvn hpi:run
 Running the unit tests
 ----------------------
 mvn clean test
+
 Note that 'clean' is required for all HudsonTestCases, without it they fail randomly..
