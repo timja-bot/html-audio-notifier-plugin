@@ -9,7 +9,7 @@
 
   <groupId>jenkins.plugins.htmlaudio</groupId>
   <artifactId>html-audio-notifier</artifactId>
-  <version>0.1-SNAPSHOT</version>
+  <version>0.1</version>
   <packaging>hpi</packaging>
   
   <name>HTML Audio Notifier</name>
