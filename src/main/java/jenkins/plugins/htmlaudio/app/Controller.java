@@ -31,7 +31,7 @@ import org.kohsuke.stapler.export.Flavor;
 @Extension
 public final class Controller implements RootAction {
     
-    private static final String PLUGIN_URL = "plugin/html-audio-notifier/";
+    private static final String PLUGIN_SOUNDS_URL = "plugin/html-audio-notifier/sounds/";
     private static final String CONTROLLER_URL = "/html-audio";
 
     private ServerUrlResolver serverUrlResolver;
@@ -178,7 +178,7 @@ public final class Controller implements RootAction {
     
     private String convertToAbsoluteUrl(String relativeUrl) {
         return serverUrlResolver.getRootUrl()
-                + PLUGIN_URL + relativeUrl;
+                + PLUGIN_SOUNDS_URL + relativeUrl;
     }
     
     
