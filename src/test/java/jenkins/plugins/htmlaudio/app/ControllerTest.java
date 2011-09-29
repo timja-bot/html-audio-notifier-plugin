@@ -184,7 +184,7 @@ public class ControllerTest {
         addEvent();
         failureSoundUrl = "rel";
         
-        assertEquals(rootUrl + "plugin/html-audio-notifier/rel",
+        assertEquals(rootUrl + "plugin/html-audio-notifier/sounds/rel",
             ((JSONArray)c.next(null).get("notifications")).get(0).toString());
     }
     

@@ -90,7 +90,7 @@ public class HtmlAudioNotifierPluginAcceptanceTest extends HudsonTestCase {
     public void test_controller_converts_to_absolute_urls() {
         final String response = invoke("toAbsoluteUrl",
                 "url", "a-relative-url");
-        assertEquals(serverUrl() + "plugin/html-audio-notifier/a-relative-url", response);
+        assertEquals(serverUrl() + "plugin/html-audio-notifier/sounds/a-relative-url", response);
     }
     
     
