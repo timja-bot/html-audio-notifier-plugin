@@ -11,12 +11,10 @@ import jenkins.plugins.htmlaudio.app.util.ServerUrlResolver;
 import jenkins.plugins.htmlaudio.domain.BuildEvent;
 import jenkins.plugins.htmlaudio.domain.BuildEventCleanupService;
 import jenkins.plugins.htmlaudio.domain.BuildEventRepository;
-import jenkins.plugins.htmlaudio.domain.BuildResult;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
-import org.apache.commons.lang.StringUtils;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
 import org.kohsuke.stapler.export.Flavor;
@@ -143,24 +141,13 @@ public final class Controller implements RootAction {
         final JSONArray result = new JSONArray();
         
         for (BuildEvent e : events) {
-            final String url = getSoundUrl(e.getResult());
-            
-            if (!StringUtils.isBlank(url)) {
+            final String url = configuration.getSoundUrl(e.getResult());
+            if (url != null) {
                 result.element(toAbsoluteUrl(url));
             }
         }
         
         return result;
-    }
-    
-    
-    private String getSoundUrl(BuildResult result) {
-        switch (result) {
-            case FAILURE:
-                return configuration.getFailureSoundUrl();
-            default:
-                return null;
-        }
     }
     
     

@@ -7,35 +7,40 @@
           <f:checkbox name="htmlAudioEnabledByDefault" checked="${descriptor.enabledByDefault}" />
       </f:entry>
       
-      <f:entry title="Failure-sound URL" help="/plugin/html-audio-notifier/help-globalConfig-failure.html">
+      <f:entry title="Success sound URL" help="/plugin/html-audio-notifier/help-globalConfig-sounds.html">
+          <f:textbox id="htmlAudioSuccessSoundUrl" name="htmlAudioSuccessSoundUrl"
+            value="${descriptor.successSoundUrl}" />
+          <input type="button" value="Test" onClick="testSound('htmlAudioSuccessSoundUrl')" />
+      </f:entry>
+      
+      <f:entry title="Failure sound URL" help="/plugin/html-audio-notifier/help-globalConfig-sounds.html">
           <f:textbox id="htmlAudioFailureSoundUrl" name="htmlAudioFailureSoundUrl"
             value="${descriptor.failureSoundUrl}" />
-          
           <input type="button" value="Test" onClick="testSound('htmlAudioFailureSoundUrl')" />
-          
-          <script type="text/javascript">
-              player = new AudioPlayer();
-              
-              player.player.addEventListener('ended', function() {
-                  alert('Completed..');
-              }, false);
-              
-              player.player.addEventListener('error', function() {
-                  alert('Failed.\nMake sure that the URL is correct or try a different file-format..');
-              }, false);
-              
-              function testSound(soundId) {
-                  var source = document.getElementById(soundId).value;
-                  
-                  new Ajax.Request("${request.contextPath}/html-audio/toAbsoluteUrl", {
-                      method: 'post',
-                      parameters: { url: source },
-                      onSuccess: function(t) {
-                          player.enqueue(t.responseText);
-                      }
-                  });
-              }
-          </script>
       </f:entry>
+      
+      <script type="text/javascript">
+          player = new AudioPlayer();
+          
+          player.player.addEventListener('ended', function() {
+              alert('Completed..');
+          }, false);
+          
+          player.player.addEventListener('error', function() {
+              alert('Failed.\nMake sure that the URL is correct or try a different file-format..');
+          }, false);
+          
+          function testSound(soundId) {
+              var source = document.getElementById(soundId).value;
+              
+              new Ajax.Request("${request.contextPath}/html-audio/toAbsoluteUrl", {
+                  method: 'post',
+                  parameters: { url: source },
+                  onSuccess: function(t) {
+                      player.enqueue(t.responseText);
+                  }
+              });
+          }
+      </script>
     </f:section>
 </j:jelly>

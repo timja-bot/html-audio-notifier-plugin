@@ -39,7 +39,7 @@ public class RunResultListenerTest {
     
     @Test
     public void results_that_does_not_correspond_to_buildResults_are_ignored() {
-        onCompleted(Result.SUCCESS);
+        onCompleted(Result.ABORTED);
         assertTrue(events.isEmpty());
     }
     

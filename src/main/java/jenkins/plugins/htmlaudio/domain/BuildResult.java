@@ -2,29 +2,42 @@ package jenkins.plugins.htmlaudio.domain;
 
 import hudson.model.Result;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
-
 
 /**
- * The possible (interesting) outcomes of a build.
+ * The possible / interesting outcomes of a build.
  * 
  * @author Lars Hvile
  */
 public enum BuildResult {
-    FAILURE(Result.FAILURE, Result.UNSTABLE);
     
-    private final Set<Result> mapping;
+    FAILURE {
+        @Override
+        protected boolean matches(Result r) {
+            return r == Result.FAILURE
+                    || r == Result.UNSTABLE;
+        }
+    },
     
-    private BuildResult(Result... mapping) {
-        this.mapping = new HashSet<Result>(Arrays.asList(mapping));
-    }
+    SUCCESS {
+        @Override
+        protected boolean matches(Result r) {
+            return r == Result.SUCCESS;
+        }
+    };
+    
     
     /**
-     * Returns {@code true} if a provided {@link Result} corresponds to a {@link BuildResult}.
+     * Returns a {@link BuildResult} matching a provided {@link Result} or {@code null}.
      */
-    public boolean correspondsTo(Result r) {
-        return mapping.contains(r);
+    public static BuildResult toBuildResult(Result r) {
+        for (BuildResult br : BuildResult.values()) {
+            if (br.matches(r)) {
+                return br;
+            }
+        }
+        return null;
     }
+    
+    
+    protected abstract boolean matches(Result r);
 }

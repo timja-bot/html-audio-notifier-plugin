@@ -1,5 +1,7 @@
 package jenkins.plugins.htmlaudio.app.util;
 
+import jenkins.plugins.htmlaudio.domain.BuildResult;
+
 
 /**
  * Exposes the plugin-configuration.
@@ -8,8 +10,14 @@ package jenkins.plugins.htmlaudio.app.util;
  */
 public interface Configuration {
     
+    /**
+     * Returns {@code true} if the notification-client should be enabled by default.
+     */
     boolean isEnabledByDefault();
     
-    String getFailureSoundUrl();
+    /**
+     * Returns a configured sound for a provided {@link BuildResult} or {@code null}.
+     */
+    String getSoundUrl(BuildResult result);
 
 }

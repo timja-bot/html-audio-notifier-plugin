@@ -48,16 +48,20 @@ public class HtmlAudioNotifierPluginAcceptanceTest extends HudsonTestCase {
         
         // value-set #1
         config.setEnabledByDefault(true);
+        config.setSuccessSoundUrl("s");
         config.setFailureSoundUrl("f");
         configRoundtrip();
         assertTrue(config.isEnabledByDefault());
+        assertEquals("s", config.getSuccessSoundUrl());
         assertEquals("f", config.getFailureSoundUrl());
         
         // value-set #2
         config.setEnabledByDefault(false);
+        config.setSuccessSoundUrl(null);
         config.setFailureSoundUrl(null);
         configRoundtrip();
         assertFalse(config.isEnabledByDefault());
+        assertEquals(null, config.getSuccessSoundUrl());
         assertEquals(null, config.getFailureSoundUrl());
     }
     
@@ -71,6 +75,7 @@ public class HtmlAudioNotifierPluginAcceptanceTest extends HudsonTestCase {
         final PluginDescriptor config = getConfig();
         
         config.setEnabledByDefault(false);
+        config.setSuccessSoundUrl(null);
         config.setFailureSoundUrl(null);
         
         HtmlForm form = createWebClient()
@@ -78,12 +83,14 @@ public class HtmlAudioNotifierPluginAcceptanceTest extends HudsonTestCase {
             .getFormByName("config");
 
         ((HtmlCheckBoxInput)form.getInputByName("htmlAudioEnabledByDefault")).setChecked(true);
-        ((HtmlTextInput)form.getInputByName("htmlAudioFailureSoundUrl")).setValueAttribute("changed");
+        ((HtmlTextInput)form.getInputByName("htmlAudioSuccessSoundUrl")).setValueAttribute("success");
+        ((HtmlTextInput)form.getInputByName("htmlAudioFailureSoundUrl")).setValueAttribute("failure");
         
         submit(form);
         
         assertTrue(config.isEnabledByDefault());
-        assertEquals("changed", config.getFailureSoundUrl());
+        assertEquals("success", config.getSuccessSoundUrl());
+        assertEquals("failure", config.getFailureSoundUrl());
     }
     
     

@@ -11,6 +11,7 @@ import jenkins.plugins.htmlaudio.app.util.ServerUrlResolver;
 import jenkins.plugins.htmlaudio.domain.BuildEvent;
 import jenkins.plugins.htmlaudio.domain.BuildEventCleanupService;
 import jenkins.plugins.htmlaudio.domain.BuildEventRepository;
+import jenkins.plugins.htmlaudio.domain.BuildResult;
 import jenkins.plugins.htmlaudio.domain.impl.VolatileBuildEventRepository;
 
 import net.sf.json.JSONArray;
@@ -45,8 +46,12 @@ public class ControllerTest {
             public boolean isEnabledByDefault() {
                 return enabledByDefault;
             }
-            public String getFailureSoundUrl() {
-                return failureSoundUrl;
+            public String getSoundUrl(BuildResult result) {
+                if (result == BuildResult.FAILURE) {
+                    return failureSoundUrl;
+                } else {
+                    return null;
+                }
             }
         });
         
@@ -138,7 +143,7 @@ public class ControllerTest {
     
     
     @Test
-    public void FAILURE_events_produces_the_failure_notification() {
+    public void expected_url_is_produced_for_specific_result() {
         addEvent();
         
         failureSoundUrl = "expected";
@@ -152,12 +157,7 @@ public class ControllerTest {
     
     @Test
     public void no_notifications_are_produced_if_sound_url_is_not_configured() {
-        addEvent();
-        
-        failureSoundUrl = null;
-        assertNoNotificationsProduced();
-        
-        failureSoundUrl = "  ";
+        repo.add(new BuildEvent(BuildResult.SUCCESS));
         assertNoNotificationsProduced();
     }
     

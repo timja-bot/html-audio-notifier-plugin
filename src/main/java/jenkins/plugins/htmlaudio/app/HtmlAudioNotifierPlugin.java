@@ -1,15 +1,16 @@
 package jenkins.plugins.htmlaudio.app;
 
+import static jenkins.plugins.htmlaudio.util.StringUtils.nullIfEmpty;
 import jenkins.model.Jenkins;
 import jenkins.plugins.htmlaudio.app.util.Configuration;
 import jenkins.plugins.htmlaudio.app.util.ServerUrlResolver;
 import jenkins.plugins.htmlaudio.domain.BuildEventCleanupService;
 import jenkins.plugins.htmlaudio.domain.BuildEventRepository;
+import jenkins.plugins.htmlaudio.domain.BuildResult;
 import jenkins.plugins.htmlaudio.domain.impl.DefaultBuildEventCleanupService;
 import jenkins.plugins.htmlaudio.domain.impl.VolatileBuildEventRepository;
 import net.sf.json.JSONObject;
 
-import org.apache.commons.lang.StringUtils;
 import org.kohsuke.stapler.StaplerRequest;
 
 import hudson.Extension;
@@ -27,6 +28,7 @@ public final class HtmlAudioNotifierPlugin extends Plugin implements Describable
     
     private final BuildEventRepository buildEventRepo = new VolatileBuildEventRepository();
     private final BuildEventCleanupService cleanupService = new DefaultBuildEventCleanupService();
+    private final Configuration configuration = new PluginConfiguration();
     
     
     @Override
@@ -40,7 +42,7 @@ public final class HtmlAudioNotifierPlugin extends Plugin implements Describable
         final Controller c = getComponent(Controller.class);
         c.setRepository(buildEventRepo);
         c.setCleanupService(cleanupService);
-        c.setConfiguration(getDescriptor());
+        c.setConfiguration(configuration);
         
         c.setServerUrlResolver(new ServerUrlResolver() {
             public String getRootUrl() {
@@ -67,16 +69,14 @@ public final class HtmlAudioNotifierPlugin extends Plugin implements Describable
     
     
     @Extension
-    public static final class PluginDescriptor extends Descriptor<HtmlAudioNotifierPlugin>
-            implements Configuration {
+    public static final class PluginDescriptor extends Descriptor<HtmlAudioNotifierPlugin> {
         
-        private volatile boolean enabledByDefault;
-        private volatile String failureSoundUrl;
+        private volatile boolean enabledByDefault = false;
+        private volatile String successSoundUrl = "pop.wav";
+        private volatile String failureSoundUrl = "horse.wav";
         
         
         public PluginDescriptor() {
-            this.enabledByDefault = false;
-            this.failureSoundUrl = "horse.wav";
             load();
         }
         
@@ -88,14 +88,10 @@ public final class HtmlAudioNotifierPlugin extends Plugin implements Describable
         
         
         @Override
-        public boolean configure(StaplerRequest req, JSONObject json) throws FormException {
+        public boolean configure(StaplerRequest req, JSONObject json) throws FormException { 
             enabledByDefault = json.getBoolean("htmlAudioEnabledByDefault");
-            failureSoundUrl = json.getString("htmlAudioFailureSoundUrl");
-            
-            if (StringUtils.isBlank(failureSoundUrl)) {
-                failureSoundUrl = null;
-            }
-            
+            successSoundUrl = nullIfEmpty(json.getString("htmlAudioSuccessSoundUrl"));
+            failureSoundUrl = nullIfEmpty(json.getString("htmlAudioFailureSoundUrl"));
             save();
             return super.configure(req, json);
         }
@@ -111,13 +107,50 @@ public final class HtmlAudioNotifierPlugin extends Plugin implements Describable
         }
         
         
-        public String getFailureSoundUrl() {
-            return failureSoundUrl;
+        public String getSuccessSoundUrl() {
+            return successSoundUrl;
+        }
+        
+        
+        public void setSuccessSoundUrl(String successSoundUrl) {
+            this.successSoundUrl = successSoundUrl;
         }
         
         
         public void setFailureSoundUrl(String failureSoundUrl) {
             this.failureSoundUrl = failureSoundUrl;
+        }
+        
+        
+        public String getFailureSoundUrl() {
+            return failureSoundUrl;
+        }
+    }
+    
+    
+    private class PluginConfiguration implements Configuration {
+
+        public boolean isEnabledByDefault() {
+            return getDescriptor().isEnabledByDefault();
+        }
+        
+        
+        public String getSoundUrl(BuildResult result) {
+            return nullIfEmpty(findConfiguredSoundForResult(getDescriptor(), result));
+        }
+        
+        
+        private String findConfiguredSoundForResult(PluginDescriptor descriptor, BuildResult result) {
+            switch (result) {
+                case SUCCESS:
+                    return descriptor.getSuccessSoundUrl();
+                    
+                case FAILURE:
+                    return descriptor.getFailureSoundUrl();
+
+                default:
+                    throw new IllegalArgumentException("unknown result-type " + result);
+            }
         }
     }
 }

@@ -1,8 +1,5 @@
 package jenkins.plugins.htmlaudio.app;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 import java.util.logging.Logger;
 
 import jenkins.plugins.htmlaudio.domain.BuildEvent;
@@ -10,7 +7,6 @@ import jenkins.plugins.htmlaudio.domain.BuildEventRepository;
 import jenkins.plugins.htmlaudio.domain.BuildResult;
 import hudson.Extension;
 import hudson.model.Run;
-import hudson.model.Result;
 import hudson.model.TaskListener;
 import hudson.model.listeners.RunListener;
 
@@ -35,28 +31,15 @@ public final class RunResultListener extends RunListener<Run<?, ?>> {
     
     @Override
     public void onCompleted(Run<?, ?> run, TaskListener listener) {
-        final Collection<BuildEvent> events = generateEvents(run.getResult());
-        storeEvents(events);
-        logger.fine("generated " + events.size() + " BuildEvent(s) based on " + run);
-    }
-
-
-    private Collection<BuildEvent> generateEvents(Result runResult) {
-        final List<BuildEvent> result = new ArrayList<BuildEvent>();
+        final BuildResult br = BuildResult.toBuildResult(run.getResult());
         
-        for (BuildResult r : BuildResult.values()) {
-            if (r.correspondsTo(runResult)) {
-                result.add(new BuildEvent(r));
-            }
+        if (br == null) {
+            return;
         }
         
-        return result;
-    }
-    
-    
-    private void storeEvents(Collection<BuildEvent> events) {
-        for (BuildEvent e : events) {
-            repository.add(e);
-        }
+        final BuildEvent event = new BuildEvent(br);
+        repository.add(event);
+        
+        logger.info("generated audio-notification " + event + " based on " + run);
     }
 }
