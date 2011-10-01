@@ -80,7 +80,12 @@ public class ControllerTest {
         assertNull(repo.getLastEventId());
         
         assertEquals(new JSONObject(true),
-            c.next(null).get("currentNotification"));
+            next(null).get("currentNotification"));
+    }
+    
+    
+    private JSONObject next(String previous) {
+        return c.next("remote-ip", previous);
     }
     
     
@@ -89,16 +94,16 @@ public class ControllerTest {
         final BuildEvent e1 = event();
         repo.add(e1);
         assertEquals(e1.getId() + "",
-            c.next(null).get("currentNotification"));
+            next(null).get("currentNotification"));
         
         final BuildEvent e2 = event();
         repo.add(e2);
         assertEquals(e2.getId() + "",
-            c.next(null).get("currentNotification"));
+            next(null).get("currentNotification"));
         
         // make sure we still get the id even if no notifications should be produced..
         assertEquals(e2.getId() + "",
-            c.next(e2.getId() + "").get("currentNotification"));
+            next(e2.getId() + "").get("currentNotification"));
     }
     
     
@@ -111,16 +116,16 @@ public class ControllerTest {
         repo.add(e2);
         
         assertEquals(2,
-            ((JSONArray)c.next(null).get("notifications")).size());
+            ((JSONArray)next(null).get("notifications")).size());
         
         assertEquals(1,
-            ((JSONArray)c.next(e1.getId() + "").get("notifications")).size());
+            ((JSONArray)next(e1.getId() + "").get("notifications")).size());
         
         assertEquals(0,
-            ((JSONArray)c.next(e2.getId() + "").get("notifications")).size());
+            ((JSONArray)next(e2.getId() + "").get("notifications")).size());
         
         assertEquals(0,
-            ((JSONArray)c.next(e2.getId() + 1 + "").get("notifications")).size());
+            ((JSONArray)next(e2.getId() + 1 + "").get("notifications")).size());
     }
     
     
@@ -129,10 +134,10 @@ public class ControllerTest {
         addEvent();
         
         assertEquals(1,
-            ((JSONArray)c.next(null).get("notifications")).size());
+            ((JSONArray)next(null).get("notifications")).size());
         
         assertEquals(1,
-            ((JSONArray)c.next("invalid").get("notifications")).size());
+            ((JSONArray)next("invalid").get("notifications")).size());
     }
     
     
@@ -148,7 +153,7 @@ public class ControllerTest {
         
         failureSoundUrl = "expected";
         
-        final String actual = ((JSONArray)c.next(null).get("notifications")).get(0).toString();
+        final String actual = ((JSONArray)next(null).get("notifications")).get(0).toString();
         
         assertTrue(actual,
             actual.contains(failureSoundUrl));
@@ -164,7 +169,7 @@ public class ControllerTest {
     
     private void assertNoNotificationsProduced() {
         assertEquals(0,
-            ((JSONArray)c.next(null).get("notifications")).size());
+            ((JSONArray)next(null).get("notifications")).size());
     }
     
     
@@ -175,7 +180,7 @@ public class ControllerTest {
         failureSoundUrl = "http://someSound";
         
         assertEquals(failureSoundUrl,
-            ((JSONArray)c.next(null).get("notifications")).get(0).toString());
+            ((JSONArray)next(null).get("notifications")).get(0).toString());
     }
     
     
@@ -185,7 +190,7 @@ public class ControllerTest {
         failureSoundUrl = "rel";
         
         assertEquals(rootUrl + "plugin/html-audio-notifier/sounds/rel",
-            ((JSONArray)c.next(null).get("notifications")).get(0).toString());
+            ((JSONArray)next(null).get("notifications")).get(0).toString());
     }
     
     
@@ -201,7 +206,7 @@ public class ControllerTest {
         });
         
         assertFalse(cleanedUp.get());
-        c.next(null);
+        next(null);
         assertTrue(cleanedUp.get());
     }
 }

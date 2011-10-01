@@ -5,6 +5,7 @@ import hudson.model.RootAction;
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.logging.Logger;
 
 import jenkins.plugins.htmlaudio.app.util.Configuration;
 import jenkins.plugins.htmlaudio.app.util.ServerUrlResolver;
@@ -31,6 +32,8 @@ public final class Controller implements RootAction {
     
     private static final String PLUGIN_SOUNDS_URL = "plugin/html-audio-notifier/sounds/";
     private static final String CONTROLLER_URL = "/html-audio";
+    
+    private static final Logger logger = Logger.getLogger(Controller.class.getName());
 
     private ServerUrlResolver serverUrlResolver;
     private BuildEventRepository repository;
@@ -87,19 +90,26 @@ public final class Controller implements RootAction {
      */
     public void doNext(StaplerRequest req, StaplerResponse resp) throws IOException {
         writeJsonResponse(resp,
-            next(req.getParameter("previous")));
+            next(req.getRemoteAddr(), req.getParameter("previous")));
     }
     
     
     /*
      * Package-private for testing.
      */
-    JSONObject next(String previous) {
+    JSONObject next(String client, String previous) {
         removeExpiredEvents();
+        
+        final Collection<BuildEvent> events = findEvents(previous);
+        
+        if (!events.isEmpty()) {
+            logger.info("delivered " + events.size() + " event(s) to " + client
+                + ", " + events);
+        }
         
         return new JSONObject()
             .element("currentNotification", getCurrentNotificationId())
-            .element("notifications", createNotificationsArray(findEvents(previous)));
+            .element("notifications", createNotificationsArray(events));
     }
     
     
