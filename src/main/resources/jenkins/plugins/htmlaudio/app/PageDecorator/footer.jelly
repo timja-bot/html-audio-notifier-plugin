@@ -1,14 +1,20 @@
 <j:jelly xmlns:j="jelly:core">
 
-    <div id="htmlAudioNotifierPanel">
-        <a href="#" onclick="htmlAudioNotifierClient.toggle(); return false;">
-            <div id="htmlAudioNotifierControl" class="disabled">Toggle audio notifications</div>
+    <div id="htmlAudioNotifierPanel" class="isDisabled">
+        <a class="enableControl" title="Click to enable audio notifications"
+                href="#" onclick="htmlAudioNotifierClient.toggle(); return false;">
+            <div class="htmlAudioDisabled">Disabled</div>
+        </a>
+        <a class="disableControl" title="Click to disable audio notifications"
+                href="#" onclick="htmlAudioNotifierClient.toggle(); return false;">
+            <div class="htmlAudioEnabled">Enabled</div>
         </a>
     </div>
 
     <script type="text/javascript">
         htmlAudioNotifierClient = new HtmlAudioNotifierClient(
             '${request.contextPath}/html-audio',
-            document.getElementById('htmlAudioNotifierControl'));
+            document.getElementById('htmlAudioNotifierPanel')
+        );
     </script>
 </j:jelly>

@@ -68,7 +68,7 @@ HtmlAudioNotifierClient.prototype = {
     },
 
     showEnabledState: function(enabled) {
-        this.uiElement.className = enabled ? 'enabled' : 'disabled';
+        this.uiElement.className = enabled ? 'isEnabled' : 'isDisabled';
     },
 
     storeEnabledState: function(enabled) {
