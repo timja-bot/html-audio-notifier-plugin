@@ -8,25 +8,25 @@ import java.util.List;
 import hudson.model.Result;
 import hudson.model.Run;
 import jenkins.plugins.htmlaudio.app.RunResultListener;
-import jenkins.plugins.htmlaudio.domain.BuildEvent;
-import jenkins.plugins.htmlaudio.domain.BuildEventRepository;
+import jenkins.plugins.htmlaudio.domain.Notification;
+import jenkins.plugins.htmlaudio.domain.NotificationRepository;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.mockito.Mockito;
 
-import support.BuildEventRepositoryAdapter;
+import support.NotificationRepositoryAdapter;
 
 
 @RunWith(JUnit4.class)
 public class RunResultListenerTest {
     
     private final RunResultListener listener = new RunResultListener();
-    private final List<BuildEvent> events = new ArrayList<BuildEvent>();
+    private final List<Notification> events = new ArrayList<Notification>();
     
-    private final BuildEventRepository repository = new BuildEventRepositoryAdapter() {
-        public void add(BuildEvent event) {
+    private final NotificationRepository repository = new NotificationRepositoryAdapter() {
+        public void add(Notification event) {
             events.add(event);
         };
     };

@@ -9,9 +9,9 @@ import java.util.logging.Logger;
 
 import jenkins.plugins.htmlaudio.app.util.Configuration;
 import jenkins.plugins.htmlaudio.app.util.ServerUrlResolver;
-import jenkins.plugins.htmlaudio.domain.BuildEvent;
-import jenkins.plugins.htmlaudio.domain.BuildEventCleanupService;
-import jenkins.plugins.htmlaudio.domain.BuildEventRepository;
+import jenkins.plugins.htmlaudio.domain.Notification;
+import jenkins.plugins.htmlaudio.domain.NotificationCleanupService;
+import jenkins.plugins.htmlaudio.domain.NotificationRepository;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -36,8 +36,8 @@ public final class Controller implements RootAction {
     private static final Logger logger = Logger.getLogger(Controller.class.getName());
 
     private ServerUrlResolver serverUrlResolver;
-    private BuildEventRepository repository;
-    private BuildEventCleanupService cleanupService;
+    private NotificationRepository repository;
+    private NotificationCleanupService cleanupService;
     private Configuration configuration;
     
     
@@ -46,12 +46,12 @@ public final class Controller implements RootAction {
     }
     
     
-    public void setRepository(BuildEventRepository repository) {
+    public void setRepository(NotificationRepository repository) {
         this.repository = repository;
     }
     
     
-    public void setCleanupService(BuildEventCleanupService cleanupService) {
+    public void setCleanupService(NotificationCleanupService cleanupService) {
         this.cleanupService = cleanupService;
     }
     
@@ -100,7 +100,7 @@ public final class Controller implements RootAction {
     JSONObject next(String client, String previous) {
         removeExpiredEvents();
         
-        final Collection<BuildEvent> events = findEvents(previous);
+        final Collection<Notification> events = findEvents(previous);
         
         if (!events.isEmpty()) {
             logger.info("delivered " + events.size() + " event(s) to " + client
@@ -108,17 +108,17 @@ public final class Controller implements RootAction {
         }
         
         return new JSONObject()
-            .element("currentNotification", getCurrentNotificationId())
+            .element("currentNotification", getCurrentNotificationId()) // TODO only rely on this if the array below is empty (important), but always collect it up front
             .element("notifications", createNotificationsArray(events));
     }
     
     
     private void removeExpiredEvents() {
-        cleanupService.removeExpiredEvents(repository);
+        cleanupService.removeExpired(repository);
     }
     
     
-    private Collection<BuildEvent> findEvents(String previous) {
+    private Collection<Notification> findEvents(String previous) {
         final Long previousEventId = parsePreviousEventId(previous);
         return previousEventId == null
             ? repository.list()
@@ -135,6 +135,9 @@ public final class Controller implements RootAction {
     
     
     private Long parsePreviousEventId(String id) {
+        
+        // TODO NotificationId.toNotificationId(String) : Long ?
+        
         if (id == null) {
             return null;
         }
@@ -147,10 +150,10 @@ public final class Controller implements RootAction {
     }
     
     
-    private JSONArray createNotificationsArray(Collection<BuildEvent> events) {
+    private JSONArray createNotificationsArray(Collection<Notification> events) {
         final JSONArray result = new JSONArray();
         
-        for (BuildEvent e : events) {
+        for (Notification e : events) {
             final String url = configuration.getSoundUrl(e.getResult());
             if (url != null) {
                 result.element(toAbsoluteUrl(url));
@@ -169,7 +172,7 @@ public final class Controller implements RootAction {
 
 
     private boolean isAbsolute(String url) {
-        return url.contains("://");
+        return url.contains("://"); // TODO sane? possible to do this from javascript instead?
     }
     
     

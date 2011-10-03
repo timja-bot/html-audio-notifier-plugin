@@ -4,11 +4,11 @@ import static jenkins.plugins.htmlaudio.util.StringUtils.nullIfEmpty;
 import jenkins.model.Jenkins;
 import jenkins.plugins.htmlaudio.app.util.Configuration;
 import jenkins.plugins.htmlaudio.app.util.ServerUrlResolver;
-import jenkins.plugins.htmlaudio.domain.BuildEventCleanupService;
-import jenkins.plugins.htmlaudio.domain.BuildEventRepository;
+import jenkins.plugins.htmlaudio.domain.NotificationCleanupService;
+import jenkins.plugins.htmlaudio.domain.NotificationRepository;
 import jenkins.plugins.htmlaudio.domain.BuildResult;
-import jenkins.plugins.htmlaudio.domain.impl.DefaultBuildEventCleanupService;
-import jenkins.plugins.htmlaudio.domain.impl.VolatileBuildEventRepository;
+import jenkins.plugins.htmlaudio.domain.impl.DefaultNotificationCleanupService;
+import jenkins.plugins.htmlaudio.domain.impl.VolatileNotificationRepositoryAndFactory;
 import net.sf.json.JSONObject;
 
 import org.kohsuke.stapler.StaplerRequest;
@@ -26,8 +26,8 @@ import hudson.model.Descriptor;
  */
 public final class HtmlAudioNotifierPlugin extends Plugin implements Describable<HtmlAudioNotifierPlugin> {
     
-    private final BuildEventRepository buildEventRepo = new VolatileBuildEventRepository();
-    private final BuildEventCleanupService cleanupService = new DefaultBuildEventCleanupService();
+    private final NotificationRepository buildEventRepo = new VolatileNotificationRepositoryAndFactory();
+    private final NotificationCleanupService cleanupService = new DefaultNotificationCleanupService();
     private final Configuration configuration = new PluginConfiguration();
     
     

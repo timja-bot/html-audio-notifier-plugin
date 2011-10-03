@@ -1,25 +1,16 @@
 package support;
 
-import java.util.Date;
-
-import jenkins.plugins.htmlaudio.domain.BuildEvent;
-import jenkins.plugins.htmlaudio.domain.BuildResult;
+import jenkins.plugins.htmlaudio.domain.Notification;
 
 
 public final class DomainObjectFactory {
     
-    public static BuildEvent event() {
-        return new BuildEvent(BuildResult.FAILURE);
-    }
-    
-    
-    public static BuildEvent event(long created) {
-        return event(new Date(created));
-    }
-    
-    
-    public static BuildEvent event(Date created) {
-        return new BuildEvent(BuildResult.FAILURE, created);
+    public static Notification createNotificationOfCertainAge(final long ageInMs) {
+        return new NotificationAdapter() {
+            @Override public long getAgeInMs() {
+                return ageInMs;
+            }
+        };
     }
     
     

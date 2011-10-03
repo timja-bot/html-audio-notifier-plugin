@@ -8,11 +8,11 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import jenkins.plugins.htmlaudio.app.Controller;
 import jenkins.plugins.htmlaudio.app.util.Configuration;
 import jenkins.plugins.htmlaudio.app.util.ServerUrlResolver;
-import jenkins.plugins.htmlaudio.domain.BuildEvent;
-import jenkins.plugins.htmlaudio.domain.BuildEventCleanupService;
-import jenkins.plugins.htmlaudio.domain.BuildEventRepository;
+import jenkins.plugins.htmlaudio.domain.Notification;
+import jenkins.plugins.htmlaudio.domain.NotificationCleanupService;
+import jenkins.plugins.htmlaudio.domain.NotificationRepository;
 import jenkins.plugins.htmlaudio.domain.BuildResult;
-import jenkins.plugins.htmlaudio.domain.impl.VolatileBuildEventRepository;
+import jenkins.plugins.htmlaudio.domain.impl.VolatileNotificationRepositoryAndFactory;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -26,7 +26,7 @@ import org.junit.runners.JUnit4;
 public class ControllerTest {
     
     private final Controller c = new Controller();
-    private final BuildEventRepository repo = new VolatileBuildEventRepository();
+    private final NotificationRepository repo = new VolatileNotificationRepositoryAndFactory();
     
     private String rootUrl = "http://root/";
     private boolean enabledByDefault = false;
@@ -55,8 +55,8 @@ public class ControllerTest {
             }
         });
         
-        c.setCleanupService(new BuildEventCleanupService() {
-            public void removeExpiredEvents(BuildEventRepository repository) {
+        c.setCleanupService(new NotificationCleanupService() {
+            public void removeExpired(NotificationRepository repository) {
                 // empty
             }
         });
@@ -91,12 +91,12 @@ public class ControllerTest {
     
     @Test
     public void id_of_last_event_is_exposed_to_clients() {
-        final BuildEvent e1 = event();
+        final Notification e1 = event();
         repo.add(e1);
         assertEquals(e1.getId() + "",
             next(null).get("currentNotification"));
         
-        final BuildEvent e2 = event();
+        final Notification e2 = event();
         repo.add(e2);
         assertEquals(e2.getId() + "",
             next(null).get("currentNotification"));
@@ -109,8 +109,8 @@ public class ControllerTest {
     
     @Test
     public void all_new_events_are_published_as_notifications() {
-        final BuildEvent e1 = event();
-        final BuildEvent e2 = event();
+        final Notification e1 = event();
+        final Notification e2 = event();
         
         repo.add(e1);
         repo.add(e2);
@@ -142,7 +142,7 @@ public class ControllerTest {
     
     
     private void addEvent() {
-        final BuildEvent e = event();
+        final Notification e = event();
         repo.add(e);
     }
     
@@ -162,7 +162,7 @@ public class ControllerTest {
     
     @Test
     public void no_notifications_are_produced_if_sound_url_is_not_configured() {
-        repo.add(new BuildEvent(BuildResult.SUCCESS));
+        repo.add(new Notification(BuildResult.SUCCESS));
         assertNoNotificationsProduced();
     }
     
@@ -198,8 +198,8 @@ public class ControllerTest {
     public void expired_events_are_automatically_removed() {
         final AtomicBoolean cleanedUp = new AtomicBoolean();
         
-        c.setCleanupService(new BuildEventCleanupService() {
-            public void removeExpiredEvents(BuildEventRepository repository) {
+        c.setCleanupService(new NotificationCleanupService() {
+            public void removeExpired(NotificationRepository repository) {
                 assertSame(ControllerTest.this.repo, repository);
                 cleanedUp.set(true);
             }
