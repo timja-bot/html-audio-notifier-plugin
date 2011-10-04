@@ -1,7 +1,5 @@
 package jenkins.plugins.htmlaudio.domain;
 
-import java.util.concurrent.atomic.AtomicLong;
-
 
 /**
  * Uniquely identifies a {@link Notification}.
@@ -10,17 +8,7 @@ import java.util.concurrent.atomic.AtomicLong;
  */
 public final class NotificationId implements Comparable<NotificationId> {
     
-    private static final AtomicLong idSequence = new AtomicLong();
-    
     private final long value;
-    
-    
-    /**
-     * Creates a new id.
-     */
-    public static NotificationId createNotificationId() {
-        return asNotificationId(idSequence.incrementAndGet());
-    }
     
     
     /**

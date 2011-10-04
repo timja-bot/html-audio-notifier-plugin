@@ -1,7 +1,7 @@
 package jenkins.plugins.htmlaudio.domain.impl;
 
 import static java.lang.Math.abs;
-import static jenkins.plugins.htmlaudio.domain.NotificationId.createNotificationId;
+import static jenkins.plugins.htmlaudio.domain.NotificationId.asNotificationId;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -24,9 +24,11 @@ import jenkins.plugins.htmlaudio.domain.NotificationRepository;
  */
 public final class VolatileNotificationRepositoryAndFactory implements NotificationRepository,
         NotificationFactory {
-   
+    
     private final List<NotificationId> index = new ArrayList<NotificationId>();
     private final List<Notification> notifications = new ArrayList<Notification>();
+    
+    private long idSequence = 1;
     
     
     /*
@@ -41,7 +43,7 @@ public final class VolatileNotificationRepositoryAndFactory implements Notificat
         
         synchronized (this) {
             final Notification n = new SimpleNotification(
-                    createNotificationId(), // TODO createNotificationId should be internal to this class...
+                    asNotificationId(idSequence++),
                     soundUrl,
                     buildDetails);
             
@@ -84,7 +86,6 @@ public final class VolatileNotificationRepositoryAndFactory implements Notificat
     
     
     private int binarySearchIndex(NotificationId id) {
-        // TODO test performance of switching to indexOf during stress-testing??
         return Collections.binarySearch(index, id);
     }
     

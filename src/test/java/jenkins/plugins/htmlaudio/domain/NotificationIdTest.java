@@ -2,7 +2,6 @@ package jenkins.plugins.htmlaudio.domain;
 
 import static java.util.Arrays.asList;
 import static jenkins.plugins.htmlaudio.domain.NotificationId.asNotificationId;
-import static jenkins.plugins.htmlaudio.domain.NotificationId.createNotificationId;
 import static org.junit.Assert.*;
 
 import java.util.ArrayList;
@@ -20,16 +19,6 @@ public class NotificationIdTest {
     final NotificationId id1 = asNotificationId(1);
     final NotificationId id2 = asNotificationId(2);
     final NotificationId id3 = asNotificationId(3);
-    
-    
-    @Test
-    public void unique_ids_can_be_generated() {
-        final NotificationId first = createNotificationId();
-        final NotificationId second = createNotificationId();
-
-        assertEquals(first.getValue() + 1,
-            second.getValue());
-    }
     
     
     @Test
