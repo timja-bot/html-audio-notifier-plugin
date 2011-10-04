@@ -1,4 +1,4 @@
-package jenkins.plugins.htmlaudio.app.util;
+package jenkins.plugins.htmlaudio.app;
 
 import jenkins.plugins.htmlaudio.domain.BuildResult;
 

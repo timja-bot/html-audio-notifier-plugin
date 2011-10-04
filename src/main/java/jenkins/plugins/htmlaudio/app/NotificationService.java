@@ -1,20 +1,9 @@
 package jenkins.plugins.htmlaudio.app;
 
 import hudson.model.Result;
-import jenkins.plugins.htmlaudio.app.util.Configuration;
 
 
 public interface NotificationService {
-    
-    /**
-     * @see Configuration#isEnabledByDefault()
-     */
-    boolean isEnabledByDefault(); // TODO controller can use the Config directly?
-    
-    /**
-     * TODO
-     */
-    String toAbsoluteUrl(String url); // TODO javascript instead? no more need for ServerUrlResolver..
     
     /**
      * TODO

@@ -6,7 +6,6 @@ import static support.DomainObjectFactory.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import jenkins.plugins.htmlaudio.app.Controller;
-import jenkins.plugins.htmlaudio.app.util.Configuration;
 import jenkins.plugins.htmlaudio.app.util.ServerUrlResolver;
 import jenkins.plugins.htmlaudio.domain.Notification;
 import jenkins.plugins.htmlaudio.domain.NotificationCleanupService;

@@ -2,7 +2,6 @@ package jenkins.plugins.htmlaudio.app;
 
 import static jenkins.plugins.htmlaudio.util.StringUtils.nullIfEmpty;
 import jenkins.model.Jenkins;
-import jenkins.plugins.htmlaudio.app.util.Configuration;
 import jenkins.plugins.htmlaudio.app.util.ServerUrlResolver;
 import jenkins.plugins.htmlaudio.domain.NotificationCleanupService;
 import jenkins.plugins.htmlaudio.domain.NotificationRepository;

@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.logging.Logger;
 
-import jenkins.plugins.htmlaudio.app.util.Configuration;
 import jenkins.plugins.htmlaudio.app.util.ServerUrlResolver;
 import jenkins.plugins.htmlaudio.domain.Notification;
 import jenkins.plugins.htmlaudio.domain.NotificationCleanupService;
