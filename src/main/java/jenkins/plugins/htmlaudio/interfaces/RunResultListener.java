@@ -1,4 +1,4 @@
-package jenkins.plugins.htmlaudio.app;
+package jenkins.plugins.htmlaudio.interfaces;
 
 import java.util.logging.Logger;
 

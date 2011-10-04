@@ -1,17 +1,18 @@
-package jenkins.plugins.htmlaudio.app;
+package jenkins.plugins.htmlaudio.interfaces;
 
 import static org.junit.Assert.*;
 import static support.DomainObjectFactory.*;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import jenkins.plugins.htmlaudio.app.Controller;
+import jenkins.plugins.htmlaudio.app.Configuration;
 import jenkins.plugins.htmlaudio.app.util.ServerUrlResolver;
 import jenkins.plugins.htmlaudio.domain.Notification;
 import jenkins.plugins.htmlaudio.domain.NotificationCleanupService;
 import jenkins.plugins.htmlaudio.domain.NotificationRepository;
 import jenkins.plugins.htmlaudio.domain.BuildResult;
 import jenkins.plugins.htmlaudio.domain.impl.VolatileNotificationRepositoryAndFactory;
+import jenkins.plugins.htmlaudio.interfaces.Controller;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;

@@ -3,6 +3,9 @@ package jenkins.plugins.htmlaudio.app;
 import hudson.model.Result;
 
 
+/**
+ * @author Lars Hvile
+ */
 public interface NotificationService {
     
     /**

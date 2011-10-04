@@ -8,6 +8,8 @@ import jenkins.plugins.htmlaudio.domain.NotificationRepository;
 import jenkins.plugins.htmlaudio.domain.BuildResult;
 import jenkins.plugins.htmlaudio.domain.impl.DefaultNotificationCleanupService;
 import jenkins.plugins.htmlaudio.domain.impl.VolatileNotificationRepositoryAndFactory;
+import jenkins.plugins.htmlaudio.interfaces.Controller;
+import jenkins.plugins.htmlaudio.interfaces.RunResultListener;
 import net.sf.json.JSONObject;
 
 import org.kohsuke.stapler.StaplerRequest;

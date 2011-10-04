@@ -1,4 +1,4 @@
-package jenkins.plugins.htmlaudio.app;
+package jenkins.plugins.htmlaudio.interfaces;
 
 import static org.junit.Assert.*;
 
@@ -7,9 +7,9 @@ import java.util.List;
 
 import hudson.model.Result;
 import hudson.model.Run;
-import jenkins.plugins.htmlaudio.app.RunResultListener;
 import jenkins.plugins.htmlaudio.domain.Notification;
 import jenkins.plugins.htmlaudio.domain.NotificationRepository;
+import jenkins.plugins.htmlaudio.interfaces.RunResultListener;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
