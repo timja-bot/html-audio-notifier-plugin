@@ -1,10 +1,12 @@
 package jenkins.plugins.htmlaudio.domain.impl;
 
+import java.util.Iterator;
 import java.util.concurrent.TimeUnit;
 
 import jenkins.plugins.htmlaudio.domain.Notification;
 import jenkins.plugins.htmlaudio.domain.NotificationCleanupService;
 import jenkins.plugins.htmlaudio.domain.NotificationRepository;
+import jenkins.plugins.htmlaudio.domain.NotificationRepository.NotificationRemover;
 
 
 /**
@@ -17,14 +19,16 @@ public class DefaultNotificationCleanupService implements NotificationCleanupSer
     
     public void removeExpired(NotificationRepository repo) {
         
-        // TODO kind of a design-flaw that we need external locking here isn't it??
-        synchronized(repo) { // TODO safe?
-            for (Notification n : repo.list()) {
-                if (tooOld(n)) {
-                    repo.remove(n);
+        repo.remove(new NotificationRemover() {
+            public void remove(Iterator<Notification> notifications) {
+                
+                while (notifications.hasNext()) {
+                    if (tooOld(notifications.next())) {
+                        notifications.remove();
+                    }
                 }
             }
-        }
+        });
     }
     
     

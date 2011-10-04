@@ -1,12 +1,10 @@
 package jenkins.plugins.htmlaudio.domain;
 
 import static java.util.Arrays.asList;
-import static java.util.Collections.unmodifiableList;
 import static org.junit.Assert.*;
 import static support.DomainObjectFactory.*;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import jenkins.plugins.htmlaudio.domain.impl.DefaultNotificationCleanupService;
 
@@ -21,8 +19,6 @@ import support.NotificationRepositoryAdapter;
 public class NotificationCleanupServiceTest {
     
     private final List<Notification> notifications = new ArrayList<Notification>();
-    private final List<Notification> removed = new ArrayList<Notification>();
-    private final NotificationRepository repo = new MockRepo();
     
     
     @Test
@@ -38,32 +34,16 @@ public class NotificationCleanupServiceTest {
         notifications.addAll(asList(n1, n2, n3, n4, n5));
         
         // everything older than 1 minute should be removed
-        assertEquals(asList(n3, n4),
-            removeExpired());
-
+        removeExpired();
         assertEquals(asList(n1, n2, n5), notifications);
     }
     
     
-    private List<Notification> removeExpired() {
-        try {
-            new DefaultNotificationCleanupService().removeExpired(repo);
-            return new ArrayList<Notification>(removed);
-        } finally {
-            notifications.removeAll(removed);
-            removed.clear();
-        }
-    }
-    
-    
-    private class MockRepo extends NotificationRepositoryAdapter {
-        
-        public void remove(Notification n) {
-            removed.add(n);
-        }
-
-        public Collection<Notification> list() {
-            return unmodifiableList(notifications);
-        }
+    private void removeExpired() {
+        new DefaultNotificationCleanupService().removeExpired(new NotificationRepositoryAdapter() {
+            @Override public void remove(NotificationRemover remover) {
+                remover.remove(notifications.iterator());
+            }
+        });
     }
 }
