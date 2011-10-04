@@ -35,31 +35,6 @@ public final class Controller implements RootAction {
     
     private static final Logger logger = Logger.getLogger(Controller.class.getName());
 
-    private ServerUrlResolver serverUrlResolver;
-    private NotificationRepository repository;
-    private NotificationCleanupService cleanupService;
-    private Configuration configuration;
-    
-    
-    public void setServerUrlResolver(ServerUrlResolver serverUrlResolver) {
-        this.serverUrlResolver = serverUrlResolver;
-    }
-    
-    
-    public void setRepository(NotificationRepository repository) {
-        this.repository = repository;
-    }
-    
-    
-    public void setCleanupService(NotificationCleanupService cleanupService) {
-        this.cleanupService = cleanupService;
-    }
-    
-    
-    public void setConfiguration(Configuration configuration) {
-        this.configuration = configuration;
-    }
-    
     
     /**
      * Returns a simple true/false indicating whether or not the client should be enabled by default.

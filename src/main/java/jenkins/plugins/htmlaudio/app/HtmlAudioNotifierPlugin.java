@@ -2,7 +2,6 @@ package jenkins.plugins.htmlaudio.app;
 
 import static jenkins.plugins.htmlaudio.util.StringUtils.nullIfEmpty;
 import jenkins.model.Jenkins;
-import jenkins.plugins.htmlaudio.app.util.ServerUrlResolver;
 import jenkins.plugins.htmlaudio.domain.NotificationCleanupService;
 import jenkins.plugins.htmlaudio.domain.NotificationRepository;
 import jenkins.plugins.htmlaudio.domain.BuildResult;
@@ -27,6 +26,7 @@ import hudson.model.Descriptor;
  */
 public final class HtmlAudioNotifierPlugin extends Plugin implements Describable<HtmlAudioNotifierPlugin> {
     
+    // TODO naming & stuff
     private final NotificationRepository buildEventRepo = new VolatileNotificationRepositoryAndFactory();
     private final NotificationCleanupService cleanupService = new DefaultNotificationCleanupService();
     private final Configuration configuration = new PluginConfiguration();
@@ -44,12 +44,6 @@ public final class HtmlAudioNotifierPlugin extends Plugin implements Describable
         c.setRepository(buildEventRepo);
         c.setCleanupService(cleanupService);
         c.setConfiguration(configuration);
-        
-        c.setServerUrlResolver(new ServerUrlResolver() {
-            public String getRootUrl() {
-                return Jenkins.getInstance().getRootUrl();
-            }
-        });
     }
     
     

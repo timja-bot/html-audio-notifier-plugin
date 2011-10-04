@@ -1,6 +1,7 @@
 package jenkins.plugins.htmlaudio.app;
 
-import hudson.model.Result;
+import jenkins.plugins.htmlaudio.domain.Notification;
+import jenkins.plugins.htmlaudio.domain.NotificationId;
 
 
 /**
@@ -9,17 +10,21 @@ import hudson.model.Result;
 public interface NotificationService {
     
     /**
-     * TODO
+     * Returns every {@link Notification} that has been registered after the previously encountered
+     * notification.
+     * 
+     * @param previous the last encountered {@link NotificationId} or {@code null} to list all each one
+     * @return a {@link NewNotificationsResult}
      */
-    // TODO next(Long previous) : Tuple<currentId, Notification>
+    NewNotificationsResult findNewNotifications(NotificationId previous);
     
     /**
      * TODO
      */
-    void registerResult(Result result); // TODO RunResultListener can also be moved over to .interfaces?
+        // TODO convert Result / Tuple<Result, Result> to a domain-object? implemented in infrastructure.jenkins??
+    // void registerResult(Result result); // TODO RunResultListener can also be moved over to .interfaces?
         // TODO should we perhaps register Notifications directly? Configuration / SoundUrlResolver could be a domain interface
         // implemented in .application using the standard PluginDescriptor
     
         // no need to have BuildEvent anymore, Notifications only??
-    
-}
+}    
