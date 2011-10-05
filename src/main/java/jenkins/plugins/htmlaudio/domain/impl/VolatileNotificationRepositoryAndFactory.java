@@ -4,7 +4,6 @@ import static java.lang.Math.abs;
 import static jenkins.plugins.htmlaudio.domain.NotificationId.asNotificationId;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -64,7 +63,7 @@ public final class VolatileNotificationRepositoryAndFactory implements Notificat
     }
     
     
-    public Collection<Notification> findNewerThan(NotificationId id) {
+    public List<Notification> findNewerThan(NotificationId id) {
         synchronized (this) {
             return safeCopy(notifications.subList(
                 from(id),

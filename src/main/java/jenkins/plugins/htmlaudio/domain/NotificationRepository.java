@@ -1,7 +1,7 @@
 package jenkins.plugins.htmlaudio.domain;
 
-import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 
 
 /**
@@ -21,7 +21,7 @@ public interface NotificationRepository {
      * 
      * @param id a {@link NotificationId} or {@code null} to list each notification
      */
-    Collection<Notification> findNewerThan(NotificationId id);
+    List<Notification> findNewerThan(NotificationId id);
     
     /**
      * Provides access to an {@link Iterator} that can be used to remove individual notifications.

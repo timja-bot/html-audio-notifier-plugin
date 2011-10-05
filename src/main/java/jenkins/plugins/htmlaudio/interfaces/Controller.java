@@ -8,10 +8,10 @@ import java.util.Collection;
 import java.util.logging.Logger;
 
 import jenkins.plugins.htmlaudio.app.Configuration;
-import jenkins.plugins.htmlaudio.app.util.ServerUrlResolver;
+import jenkins.plugins.htmlaudio.app.NewNotificationsResult;
+import jenkins.plugins.htmlaudio.app.NotificationService;
 import jenkins.plugins.htmlaudio.domain.Notification;
-import jenkins.plugins.htmlaudio.domain.NotificationCleanupService;
-import jenkins.plugins.htmlaudio.domain.NotificationRepository;
+import jenkins.plugins.htmlaudio.domain.NotificationId;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -30,11 +30,23 @@ import org.kohsuke.stapler.export.Flavor;
 @Extension
 public final class Controller implements RootAction {
     
-    private static final String PLUGIN_SOUNDS_URL = "plugin/html-audio-notifier/sounds/";
     private static final String CONTROLLER_URL = "/html-audio";
     
     private static final Logger logger = Logger.getLogger(Controller.class.getName());
-
+    
+    private Configuration configuration;
+    private NotificationService notificationService;
+    
+    
+    public void setConfiguration(Configuration configuration) {
+        this.configuration = configuration;
+    }
+    
+    
+    public void setNotificationService(NotificationService notificationService) {
+        this.notificationService = notificationService;
+    }
+    
     
     /**
      * Returns a simple true/false indicating whether or not the client should be enabled by default.
@@ -45,10 +57,7 @@ public final class Controller implements RootAction {
     }
     
     
-    /*
-     * Package-private for testing.
-     */
-    JSONObject isEnabledByDefault() {
+    private JSONObject isEnabledByDefault() {
         return new JSONObject()
             .element("enabled", configuration.isEnabledByDefault());
     }
@@ -65,105 +74,39 @@ public final class Controller implements RootAction {
      */
     public void doNext(StaplerRequest req, StaplerResponse resp) throws IOException {
         writeJsonResponse(resp,
-            next(req.getRemoteAddr(), req.getParameter("previous")));
+            findNext(req.getRemoteAddr(), req.getParameter("previous")));
     }
     
     
-    /*
-     * Package-private for testing.
-     */
-    JSONObject next(String client, String previous) {
-        removeExpiredEvents();
-        
-        final Collection<Notification> events = findEvents(previous);
-        
-        if (!events.isEmpty()) {
-            logger.info("delivered " + events.size() + " event(s) to " + client
-                + ", " + events);
+    private JSONObject findNext(String client, String previous) {
+        final NewNotificationsResult next = notificationService.findNewNotifications(null); // TODO not null
+     
+        if (!next.getNotifications().isEmpty()) {
+            logger.info("delivering " + next.getNotifications().size() + " event(s) to " + client
+                + ", " + next.getNotifications());
         }
         
         return new JSONObject()
-            .element("currentNotification", getCurrentNotificationId()) // TODO only rely on this if the array below is empty (important), but always collect it up front
-            .element("notifications", createNotificationsArray(events));
+            .element("currentNotification", createCurrentNotificationObject(next.getLastNotificationId()))
+            .element("notifications", createNotificationsArray(next.getNotifications()));
     }
     
     
-    private void removeExpiredEvents() {
-        cleanupService.removeExpired(repository);
-    }
-    
-    
-    private Collection<Notification> findEvents(String previous) {
-        final Long previousEventId = parsePreviousEventId(previous);
-        return previousEventId == null
-            ? repository.list()
-            : repository.findNewerThan(previousEventId);
-    }
-    
-    
-    private Object getCurrentNotificationId() {
-        final Long lastEventId = repository.getLastEventId();
-        return lastEventId == null
+    private Object createCurrentNotificationObject(NotificationId lastNotificationId) {
+        return lastNotificationId == null
             ? new JSONObject(true)
-            : String.valueOf(lastEventId);
+            : String.valueOf(lastNotificationId.getValue());
     }
     
     
-    private Long parsePreviousEventId(String id) {
-        
-        // TODO NotificationId.toNotificationId(String) : Long ?
-        
-        if (id == null) {
-            return null;
-        }
-        
-        try {
-            return Long.valueOf(id);
-        } catch (NumberFormatException e) {
-            return null;
-        }
-    }
-    
-    
-    private JSONArray createNotificationsArray(Collection<Notification> events) {
+    private JSONArray createNotificationsArray(Collection<Notification> notifications) {
         final JSONArray result = new JSONArray();
         
-        for (Notification e : events) {
-            final String url = configuration.getSoundUrl(e.getResult());
-            if (url != null) {
-                result.element(toAbsoluteUrl(url));
-            }
+        for (Notification n : notifications) {
+            result.element(n.getSoundUrl());
         }
         
         return result;
-    }
-    
-    
-    private String toAbsoluteUrl(String url) {
-        return isAbsolute(url)
-            ? url
-            : convertToAbsoluteUrl(url);
-    }
-
-
-    private boolean isAbsolute(String url) {
-        return url.contains("://"); // TODO sane? possible to do this from javascript instead?
-    }
-    
-    
-    private String convertToAbsoluteUrl(String relativeUrl) {
-        return serverUrlResolver.getRootUrl()
-                + PLUGIN_SOUNDS_URL + relativeUrl;
-    }
-    
-    
-    /**
-     * Converts an URL to an absolute URL if necessary. Used by the configuration-page for testing
-     * sounds in the browser.
-     */
-    public void doToAbsoluteUrl(StaplerRequest req, StaplerResponse resp) throws IOException {
-        resp.setContentType("text/plain");
-        resp.getWriter().print(toAbsoluteUrl(req.getParameter("url")));
     }
     
     

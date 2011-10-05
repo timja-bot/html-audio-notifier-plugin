@@ -2,8 +2,8 @@ package jenkins.plugins.htmlaudio.app;
 
 import static jenkins.plugins.htmlaudio.util.StringUtils.nullIfEmpty;
 import jenkins.model.Jenkins;
+import jenkins.plugins.htmlaudio.app.impl.DefaultNotificationService;
 import jenkins.plugins.htmlaudio.domain.NotificationCleanupService;
-import jenkins.plugins.htmlaudio.domain.NotificationRepository;
 import jenkins.plugins.htmlaudio.domain.BuildResult;
 import jenkins.plugins.htmlaudio.domain.impl.DefaultNotificationCleanupService;
 import jenkins.plugins.htmlaudio.domain.impl.VolatileNotificationRepositoryAndFactory;
@@ -26,35 +26,44 @@ import hudson.model.Descriptor;
  */
 public final class HtmlAudioNotifierPlugin extends Plugin implements Describable<HtmlAudioNotifierPlugin> {
     
-    // TODO naming & stuff
-    private final NotificationRepository buildEventRepo = new VolatileNotificationRepositoryAndFactory();
-    private final NotificationCleanupService cleanupService = new DefaultNotificationCleanupService();
+    private final VolatileNotificationRepositoryAndFactory notificationRepoAndFactory
+        = new VolatileNotificationRepositoryAndFactory();
+    private final NotificationCleanupService notificationCleanupService
+        = new DefaultNotificationCleanupService();
     private final Configuration configuration = new PluginConfiguration();
     
     
     @Override
     public void postInitialize() {
+        initializeNotificationService();
         initializeController();
         initializeRunResultListener();
     }
 
 
-    private void initializeController() {
-        final Controller c = getComponent(Controller.class);
-        c.setRepository(buildEventRepo);
-        c.setCleanupService(cleanupService);
-        c.setConfiguration(configuration);
+    private void initializeNotificationService() {
+        final DefaultNotificationService svc = getComponent(DefaultNotificationService.class);
+        svc.setNotificationRepository(notificationRepoAndFactory);
+        svc.setNotificationCleanupService(notificationCleanupService);
     }
     
     
     private <T> T getComponent(Class<T> type) {
         return Jenkins.getInstance().getExtensionList(type).get(0);
     }
+
+
+    private void initializeController() {
+        final Controller c = getComponent(Controller.class);
+        c.setConfiguration(configuration);
+        c.setNotificationService(getComponent(NotificationService.class));
+    }
     
     
     private void initializeRunResultListener() {
         final RunResultListener r = getComponent(RunResultListener.class);
-        r.setRepository(buildEventRepo);
+        r.setRepository(notificationRepoAndFactory);
+        // TODO inject service
     }
 
 
