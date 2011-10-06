@@ -1,19 +1,11 @@
 package jenkins.plugins;
 
-import hudson.Launcher;
-import hudson.model.AbstractBuild;
-import hudson.model.BuildListener;
-import hudson.model.FreeStyleBuild;
-import hudson.model.FreeStyleProject;
-import hudson.model.Result;
-
 import jenkins.plugins.htmlaudio.app.HtmlAudioNotifierPlugin;
 import jenkins.plugins.htmlaudio.app.HtmlAudioNotifierPlugin.PluginDescriptor;
 
 import org.junit.internal.runners.JUnit38ClassRunner;
 import org.junit.runner.RunWith;
 import org.jvnet.hudson.test.HudsonTestCase;
-import org.jvnet.hudson.test.TestBuilder;
 
 import com.gargoylesoftware.htmlunit.html.HtmlCheckBoxInput;
 import com.gargoylesoftware.htmlunit.html.HtmlForm;
@@ -80,4 +72,8 @@ public class HtmlAudioNotifierPluginAcceptanceTest extends HudsonTestCase {
         assertEquals("success", config.getSuccessSoundUrl());
         assertEquals("failure", config.getFailureSoundUrl());
     }
+    
+    
+    // TODO some of the former tests please.. fail a build, make sure it's available to clients
+    
 }
