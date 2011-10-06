@@ -1,5 +1,12 @@
 package support;
 
+import hudson.Launcher;
+import hudson.model.AbstractBuild;
+import hudson.model.BuildListener;
+import hudson.model.FreeStyleBuild;
+import hudson.model.FreeStyleProject;
+import hudson.model.Result;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,6 +21,7 @@ import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.NameValuePair;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.jvnet.hudson.test.HudsonTestCase;
+import org.jvnet.hudson.test.TestBuilder;
 
 
 /**
@@ -42,7 +50,26 @@ public class HtmlAudioHudsonTestCase extends HudsonTestCase {
     }
     
     
-    protected String invoke(String action, String... parameters) {
+    protected final void failSomeBuild() {
+        try {
+            final FreeStyleProject project = createFreeStyleProject();
+            
+            project.getBuildersList().add(new TestBuilder() {
+                public boolean perform(AbstractBuild<?, ?> build, Launcher launcher, BuildListener listener)
+                        throws IOException {
+                    return false;
+                }
+            });
+            
+            final FreeStyleBuild build = project.scheduleBuild2(0).get();
+            assertEquals(Result.FAILURE, build.getResult());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+    
+    
+    protected final String invoke(String action, String... parameters) {
         try {
             final HttpMethod request = createRequest(action,
                     createRequestParameters(parameters));

@@ -1,39 +1,37 @@
 package jenkins.plugins.htmlaudio_component;
 
-import static org.junit.Assert.*;
+import java.util.List;
+
+import jenkins.plugins.htmlaudio.app.NotificationService;
+import jenkins.plugins.htmlaudio.domain.Notification;
 
 import org.junit.Test;
+import org.junit.internal.runners.JUnit38ClassRunner;
 import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
+
+import support.HtmlAudioHudsonTestCase;
 
 
-@RunWith(JUnit4.class)
-public class RunResultListenerComponentTest {
+@RunWith(JUnit38ClassRunner.class)
+public class RunResultListenerComponentTest extends HtmlAudioHudsonTestCase {
     
-    @Test
-    public void something() {
-        fail();
-    }
-    
-    /* TODO add some
-    
-    @Test
-    public void results_that_does_not_correspond_to_buildResults_are_ignored() {
-        onCompleted(Result.ABORTED);
-        assertTrue(events.isEmpty());
-    }
+    private NotificationService svc;
     
     
-    private void onCompleted(Result r) {
-        final Run<?, ?> run = Mockito.mock(Run.class);
-        Mockito.when(run.getResult()).thenReturn(r);
-        listener.onCompleted(run, null);
+    @Override
+    protected void setUp() throws Exception {
+        super.setUp();
+        this.svc = getExtension(NotificationService.class);
+        getConfig().setFailureSoundUrl("failure");
     }
     
     
     @Test
-    public void results_that_do_correspond_to_buildResults_are_added_to_repository() {
-        onCompleted(Result.FAILURE);
-        assertEquals(1, events.size());
-    }*/
+    public void test_notifications_are_created_based_on_builds() {
+        failSomeBuild();
+        
+        final List<Notification> notifications = svc.findNewNotifications(null).getNotifications();
+        assertEquals(1, notifications.size());
+        assertEquals("failure", notifications.get(0).getSoundUrl());
+    }
 }

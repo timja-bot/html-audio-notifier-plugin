@@ -31,9 +31,6 @@ import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
 @RunWith(JUnit38ClassRunner.class)
 public class HtmlAudioNotifierPluginAcceptanceTest extends HudsonTestCase {
     
-    //private final HttpClient httpClient = new HttpClient();
-    
-    
     public void test_configuration_does_not_change_by_accident() throws Exception {
         final PluginDescriptor config = getConfig();
         
@@ -82,24 +79,5 @@ public class HtmlAudioNotifierPluginAcceptanceTest extends HudsonTestCase {
         assertTrue(config.isEnabledByDefault());
         assertEquals("success", config.getSuccessSoundUrl());
         assertEquals("failure", config.getFailureSoundUrl());
-    }
-    
-    
-    private void failSomeBuild() { // TODO reusable
-        try {
-            final FreeStyleProject project = createFreeStyleProject();
-            
-            project.getBuildersList().add(new TestBuilder() {
-                public boolean perform(AbstractBuild<?, ?> build, Launcher launcher, BuildListener listener) {
-                    build.setResult(Result.FAILURE);
-                    return false;
-                }
-            });
-            
-            final FreeStyleBuild result = project.scheduleBuild2(0).get();
-            assertEquals(Result.FAILURE, result.getResult());
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
     }
 }
