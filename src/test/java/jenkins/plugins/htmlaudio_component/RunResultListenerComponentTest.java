@@ -1,4 +1,4 @@
-package jenkins.plugins.htmlaudio.interfaces;
+package jenkins.plugins.htmlaudio_component;
 
 import static org.junit.Assert.*;
 
