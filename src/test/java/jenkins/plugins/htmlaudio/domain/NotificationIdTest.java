@@ -1,7 +1,7 @@
 package jenkins.plugins.htmlaudio.domain;
 
 import static java.util.Arrays.asList;
-import static jenkins.plugins.htmlaudio.domain.NotificationId.asNotificationId;
+import static jenkins.plugins.htmlaudio.domain.NotificationId.*;
 import static org.junit.Assert.*;
 
 import java.util.ArrayList;
@@ -47,5 +47,15 @@ public class NotificationIdTest {
         
         assertEquals(asList(id1, id2, id3),
             new ArrayList<NotificationId>(ids));
+    }
+    
+    
+    @Test
+    public void valid_strings_are_converted_to_ids() {
+        assertEquals(asNotificationId(123), parseNotificationId("123"));
+        assertEquals(asNotificationId(123), parseNotificationId(" 123\t"));
+        assertEquals(null, parseNotificationId(""));
+        assertEquals(null, parseNotificationId(null));
+        assertEquals(null, parseNotificationId("abc"));
     }
 }

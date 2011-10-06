@@ -44,6 +44,8 @@ public final class HtmlAudioNotifierPlugin extends Plugin implements Describable
     private void initializeNotificationService() {
         final DefaultNotificationService svc = getComponent(DefaultNotificationService.class);
         svc.setNotificationRepository(notificationRepoAndFactory);
+        svc.setNotificationFactory(notificationRepoAndFactory);
+        svc.setConfiguration(configuration);
         svc.setNotificationCleanupService(notificationCleanupService);
     }
     
@@ -62,8 +64,7 @@ public final class HtmlAudioNotifierPlugin extends Plugin implements Describable
     
     private void initializeRunResultListener() {
         final RunResultListener r = getComponent(RunResultListener.class);
-        r.setRepository(notificationRepoAndFactory);
-        // TODO inject service
+        r.setNotificationService(getComponent(NotificationService.class));
     }
 
 

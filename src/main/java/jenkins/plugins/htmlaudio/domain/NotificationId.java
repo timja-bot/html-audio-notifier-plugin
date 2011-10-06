@@ -1,5 +1,8 @@
 package jenkins.plugins.htmlaudio.domain;
 
+import static java.lang.Long.parseLong;
+import static org.apache.commons.lang.StringUtils.isBlank;
+
 
 /**
  * Uniquely identifies a {@link Notification}.
@@ -16,6 +19,22 @@ public final class NotificationId implements Comparable<NotificationId> {
      */
     public static NotificationId asNotificationId(long value) {
         return new NotificationId(value);
+    }
+    
+    
+    /**
+     * Parses a {@link NotificationId} from a string.
+     * 
+     * @return a {@link NotificationId} or {@code null} if invalid
+     */
+    public static NotificationId parseNotificationId(String value) {
+        try {
+            return isBlank(value)
+                ? null
+                : asNotificationId(parseLong(value.trim()));
+        } catch (NumberFormatException e) {
+            return null;
+        }
     }
     
     

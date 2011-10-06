@@ -1,10 +1,6 @@
 package jenkins.plugins.htmlaudio.interfaces;
 
-import java.util.logging.Logger;
-
-import jenkins.plugins.htmlaudio.domain.Notification;
-import jenkins.plugins.htmlaudio.domain.NotificationRepository;
-import jenkins.plugins.htmlaudio.domain.BuildResult;
+import jenkins.plugins.htmlaudio.app.NotificationService;
 import hudson.Extension;
 import hudson.model.Run;
 import hudson.model.TaskListener;
@@ -19,28 +15,18 @@ import hudson.model.listeners.RunListener;
 @Extension
 public final class RunResultListener extends RunListener<Run<?, ?>> {
     
-    private static final Logger logger = Logger.getLogger(RunResultListener.class.getName());
-    
-    private NotificationRepository repository;
+    private NotificationService notificationService;
     
     
-    public void setRepository(NotificationRepository repository) {
-        this.repository = repository;
+    public void setNotificationService(NotificationService notificationService) {
+        this.notificationService = notificationService;
     }
     
     
     @Override
     public void onCompleted(Run<?, ?> run, TaskListener listener) {
-        final BuildResult br = BuildResult.toBuildResult(run.getResult());
         
-        if (br == null) {
-            return;
-        }
-        
-        final Notification event = new Notification(br); // TODO should possibly be synchronized so we're guaranteed that they're inserted in the correct order?? another option is that the repo injects the ID at insertion-time 
-        repository.add(event);
-        // TODO oh.. and this stuff should be moved to NotificationService
-        
-        logger.info("generated audio-notification " + event + " based on " + run);
+        notificationService.recordBuildCompletion(run.getFullDisplayName(),
+                run.getResult());
     }
 }

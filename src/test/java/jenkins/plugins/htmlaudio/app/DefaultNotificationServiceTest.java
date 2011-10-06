@@ -6,11 +6,15 @@ import static jenkins.plugins.htmlaudio.domain.NotificationId.asNotificationId;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
+import hudson.model.Result;
+
 import java.util.List;
 
 import jenkins.plugins.htmlaudio.app.impl.DefaultNotificationService;
+import jenkins.plugins.htmlaudio.domain.BuildResult;
 import jenkins.plugins.htmlaudio.domain.Notification;
 import jenkins.plugins.htmlaudio.domain.NotificationCleanupService;
+import jenkins.plugins.htmlaudio.domain.NotificationFactory;
 import jenkins.plugins.htmlaudio.domain.NotificationId;
 import jenkins.plugins.htmlaudio.domain.NotificationRepository;
 import jenkins.plugins.htmlaudio.domain.impl.SimpleNotification;
@@ -26,6 +30,8 @@ public class DefaultNotificationServiceTest {
     
     private final DefaultNotificationService svc = new DefaultNotificationService();
     private final NotificationRepository notificationRepo = mock(NotificationRepository.class);
+    private final NotificationFactory notificationFactory = mock(NotificationFactory.class);
+    private final Configuration configuration = mock(Configuration.class);
     private final NotificationCleanupService notificationCleanupService = mock(NotificationCleanupService.class);
     
     private final List<Notification> noNotifications = emptyList();
@@ -33,6 +39,8 @@ public class DefaultNotificationServiceTest {
     
     {
         svc.setNotificationRepository(notificationRepo);
+        svc.setNotificationFactory(notificationFactory);
+        svc.setConfiguration(configuration);
         svc.setNotificationCleanupService(notificationCleanupService);
     }
     
@@ -114,4 +122,31 @@ public class DefaultNotificationServiceTest {
         final NewNotificationsResult result = svc.findNewNotifications(null);
         assertEquals(asNotificationId(124), result.getLastNotificationId());
     }
+    
+    
+    @Test
+    public void notification_is_not_created_for_unsupported_result() {
+        svc.recordBuildCompletion(null, Result.ABORTED);
+        verifyZeroInteractions(notificationFactory);
+    }
+    
+    
+    @Test
+    public void notification_is_not_created_if_no_sound_is_configured() {
+        svc.recordBuildCompletion(null, Result.SUCCESS);
+        verify(configuration).getSoundUrl(BuildResult.SUCCESS);
+        verifyZeroInteractions(notificationFactory);
+    }
+    
+    
+    @Test
+    public void notification_is_created_if_result_has_a_configured_sound_url() {
+        when(configuration.getSoundUrl(BuildResult.FAILURE))
+            .thenReturn("url");
+        
+        svc.recordBuildCompletion("details", Result.FAILURE);
+        
+        verify(configuration).getSoundUrl(BuildResult.FAILURE);
+        verify(notificationFactory).createAndPersist("url", "details");
+    }   
 }

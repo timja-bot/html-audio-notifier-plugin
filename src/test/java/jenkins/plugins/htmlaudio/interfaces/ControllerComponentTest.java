@@ -1,68 +1,33 @@
 package jenkins.plugins.htmlaudio.interfaces;
 
 import static org.junit.Assert.*;
-import static support.DomainObjectFactory.*;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import jenkins.plugins.htmlaudio.app.Configuration;
-import jenkins.plugins.htmlaudio.app.util.ServerUrlResolver;
+import jenkins.plugins.htmlaudio.domain.BuildResult;
 import jenkins.plugins.htmlaudio.domain.Notification;
 import jenkins.plugins.htmlaudio.domain.NotificationCleanupService;
 import jenkins.plugins.htmlaudio.domain.NotificationRepository;
-import jenkins.plugins.htmlaudio.domain.BuildResult;
-import jenkins.plugins.htmlaudio.domain.impl.VolatileNotificationRepositoryAndFactory;
-import jenkins.plugins.htmlaudio.interfaces.Controller;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 import org.junit.Test;
+import org.junit.internal.runners.JUnit38ClassRunner;
 import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
+import org.jvnet.hudson.test.HudsonTestCase;
 
 
-@RunWith(JUnit4.class)
-public class ControllerTest {
+@RunWith(JUnit38ClassRunner.class)
+public class ControllerComponentTest extends HudsonTestCase {
     
-    private final Controller c = new Controller();
-    private final NotificationRepository repo = new VolatileNotificationRepositoryAndFactory();
-    
-    private String rootUrl = "http://root/";
-    private boolean enabledByDefault = false;
-    private String failureSoundUrl = "f";
-    
-    
-    {
-        c.setServerUrlResolver(new ServerUrlResolver() {
-            public String getRootUrl() {
-                return rootUrl;
-            }
-        });
-        
-        c.setRepository(repo);
-        
-        c.setConfiguration(new Configuration() {
-            public boolean isEnabledByDefault() {
-                return enabledByDefault;
-            }
-            public String getSoundUrl(BuildResult result) {
-                if (result == BuildResult.FAILURE) {
-                    return failureSoundUrl;
-                } else {
-                    return null;
-                }
-            }
-        });
-        
-        c.setCleanupService(new NotificationCleanupService() {
-            public void removeExpired(NotificationRepository repository) {
-                // empty
-            }
-        });
+    public void test_something() {
+        System.out.println("\n\nkvakk");
     }
+
     
-    
+    /* TODO plus some from the existing acceptance-test??
+     * 
     @Test
     public void isEnabled_produces_expected_result() {
         enabledByDefault = false;
@@ -209,4 +174,5 @@ public class ControllerTest {
         next(null);
         assertTrue(cleanedUp.get());
     }
+     */
 }

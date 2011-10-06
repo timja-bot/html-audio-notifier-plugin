@@ -1,5 +1,6 @@
 package jenkins.plugins.htmlaudio.app;
 
+import hudson.model.Result;
 import jenkins.plugins.htmlaudio.domain.Notification;
 import jenkins.plugins.htmlaudio.domain.NotificationId;
 
@@ -19,12 +20,11 @@ public interface NotificationService {
     NewNotificationsResult findNewNotifications(NotificationId previous);
     
     /**
-     * TODO
+     * Records the completion of a build, which may turn out to generate a notification.
+     * 
+     * @param buildDetails a simple string-representation of the build that completed
+     * @param result the build-outcome
      */
-        // TODO convert Result / Tuple<Result, Result> to a domain-object? implemented in infrastructure.jenkins??
-    // void registerResult(Result result); // TODO RunResultListener can also be moved over to .interfaces?
-        // TODO should we perhaps register Notifications directly? Configuration / SoundUrlResolver could be a domain interface
-        // implemented in .application using the standard PluginDescriptor
+    void recordBuildCompletion(String buildDetails, Result result);
     
-        // no need to have BuildEvent anymore, Notifications only??
-}    
+}

@@ -1,5 +1,6 @@
 package jenkins.plugins.htmlaudio.interfaces;
 
+import static jenkins.plugins.htmlaudio.domain.NotificationId.parseNotificationId;
 import hudson.Extension;
 import hudson.model.RootAction;
 
@@ -79,7 +80,8 @@ public final class Controller implements RootAction {
     
     
     private JSONObject findNext(String client, String previous) {
-        final NewNotificationsResult next = notificationService.findNewNotifications(null); // TODO not null
+        final NewNotificationsResult next = notificationService.findNewNotifications(
+                parseNotificationId(previous));
      
         if (!next.getNotifications().isEmpty()) {
             logger.info("delivering " + next.getNotifications().size() + " event(s) to " + client
