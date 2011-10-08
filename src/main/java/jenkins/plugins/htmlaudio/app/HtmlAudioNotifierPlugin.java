@@ -1,7 +1,5 @@
 package jenkins.plugins.htmlaudio.app;
 
-import static jenkins.plugins.htmlaudio.util.StringUtils.nullIfEmpty;
-
 import jenkins.model.Jenkins;
 import jenkins.plugins.htmlaudio.app.impl.DefaultNotificationService;
 import jenkins.plugins.htmlaudio.app.impl.PluginConfiguration;
@@ -95,8 +93,8 @@ public final class HtmlAudioNotifierPlugin extends Plugin implements Describable
         @Override
         public boolean configure(StaplerRequest req, JSONObject json) throws FormException { 
             enabledByDefault = json.getBoolean("htmlAudioEnabledByDefault");
-            successSoundUrl = nullIfEmpty(json.getString("htmlAudioSuccessSoundUrl"));
-            failureSoundUrl = nullIfEmpty(json.getString("htmlAudioFailureSoundUrl"));
+            successSoundUrl = json.getString("htmlAudioSuccessSoundUrl");
+            failureSoundUrl = json.getString("htmlAudioFailureSoundUrl");
             save();
             return super.configure(req, json);
         }

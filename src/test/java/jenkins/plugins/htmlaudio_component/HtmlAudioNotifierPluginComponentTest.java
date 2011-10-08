@@ -36,15 +36,8 @@ public class HtmlAudioNotifierPluginComponentTest extends HudsonTestCase {
         config.setFailureSoundUrl(null);
         configRoundtrip();
         assertFalse(config.isEnabledByDefault());
-        assertEquals(null, config.getSuccessSoundUrl());
-        assertEquals(null, config.getFailureSoundUrl());
-
-        // value-set #3, empty URLs -> null TODO neeh.. PluginConfgurationComponentTest??
-        config.setSuccessSoundUrl("");
-        config.setFailureSoundUrl("\t");
-        configRoundtrip();
-        assertEquals(null, config.getSuccessSoundUrl());
-        assertEquals(null, config.getFailureSoundUrl());
+        assertEquals("", config.getSuccessSoundUrl());
+        assertEquals("", config.getFailureSoundUrl());
     }
     
     
