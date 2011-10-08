@@ -1,10 +1,11 @@
 package jenkins.plugins.htmlaudio.app;
 
 import static jenkins.plugins.htmlaudio.util.StringUtils.nullIfEmpty;
+
 import jenkins.model.Jenkins;
 import jenkins.plugins.htmlaudio.app.impl.DefaultNotificationService;
+import jenkins.plugins.htmlaudio.app.impl.PluginConfiguration;
 import jenkins.plugins.htmlaudio.domain.NotificationCleanupService;
-import jenkins.plugins.htmlaudio.domain.BuildResult;
 import jenkins.plugins.htmlaudio.domain.impl.DefaultNotificationCleanupService;
 import jenkins.plugins.htmlaudio.domain.impl.VolatileNotificationRepositoryAndFactory;
 import jenkins.plugins.htmlaudio.interfaces.Controller;
@@ -15,6 +16,8 @@ import org.kohsuke.stapler.StaplerRequest;
 
 import hudson.Extension;
 import hudson.Plugin;
+import hudson.init.InitMilestone;
+import hudson.init.Initializer;
 import hudson.model.Describable;
 import hudson.model.Descriptor;
 
@@ -26,45 +29,42 @@ import hudson.model.Descriptor;
  */
 public final class HtmlAudioNotifierPlugin extends Plugin implements Describable<HtmlAudioNotifierPlugin> {
     
-    private final VolatileNotificationRepositoryAndFactory notificationRepoAndFactory
-        = new VolatileNotificationRepositoryAndFactory();
-    private final NotificationCleanupService notificationCleanupService
-        = new DefaultNotificationCleanupService();
-    private final Configuration configuration = new PluginConfiguration();
-    
-    
-    @Override
-    public void postInitialize() {
-        initializeNotificationService();
-        initializeController();
-        initializeRunResultListener();
-    }
+    /**
+     * Initializes the other components in the plugin by injecting their required dependencies.
+     * To get access to the other components, this must happen in, or after,
+     * {@link InitMilestone#PLUGINS_PREPARED}. Using {@link #postInitialize()} is not an option since it may
+     * be called in {@link InitMilestone#PLUGINS_LISTED}.
+     */
+    @Initializer(after=InitMilestone.PLUGINS_PREPARED)
+    public static void initializePlugin() {
+        final VolatileNotificationRepositoryAndFactory notificationRepoAndFactory
+            = new VolatileNotificationRepositoryAndFactory();
 
+        final NotificationCleanupService notificationCleanupService
+            = new DefaultNotificationCleanupService();
+        
+        final HtmlAudioNotifierPlugin plugin = Jenkins.getInstance().getPlugin(HtmlAudioNotifierPlugin.class);
+        final PluginConfiguration configuration = getComponent(PluginConfiguration.class);
+        final DefaultNotificationService notificationService = getComponent(DefaultNotificationService.class);
+        final Controller controller = getComponent(Controller.class);
+        final RunResultListener listener = getComponent(RunResultListener.class);
+        
+        configuration.setPluginDescriptor(plugin.getDescriptor());
 
-    private void initializeNotificationService() {
-        final DefaultNotificationService svc = getComponent(DefaultNotificationService.class);
-        svc.setNotificationRepository(notificationRepoAndFactory);
-        svc.setNotificationFactory(notificationRepoAndFactory);
-        svc.setConfiguration(configuration);
-        svc.setNotificationCleanupService(notificationCleanupService);
+        notificationService.setNotificationRepository(notificationRepoAndFactory);
+        notificationService.setNotificationFactory(notificationRepoAndFactory);
+        notificationService.setConfiguration(configuration);
+        notificationService.setNotificationCleanupService(notificationCleanupService);
+        
+        controller.setConfiguration(configuration);
+        controller.setNotificationService(notificationService);
+        
+        listener.setNotificationService(notificationService);
     }
     
     
-    private <T> T getComponent(Class<T> type) {
+    private static <T> T getComponent(Class<T> type) {
         return Jenkins.getInstance().getExtensionList(type).get(0);
-    }
-
-
-    private void initializeController() {
-        final Controller c = getComponent(Controller.class);
-        c.setConfiguration(configuration);
-        c.setNotificationService(getComponent(NotificationService.class));
-    }
-    
-    
-    private void initializeRunResultListener() {
-        final RunResultListener r = getComponent(RunResultListener.class);
-        r.setNotificationService(getComponent(NotificationService.class));
     }
 
 
@@ -129,33 +129,6 @@ public final class HtmlAudioNotifierPlugin extends Plugin implements Describable
         
         public String getFailureSoundUrl() {
             return failureSoundUrl;
-        }
-    }
-    
-    
-    private class PluginConfiguration implements Configuration {
-
-        public boolean isEnabledByDefault() {
-            return getDescriptor().isEnabledByDefault();
-        }
-        
-        
-        public String getSoundUrl(BuildResult result) {
-            return nullIfEmpty(findConfiguredSoundForResult(getDescriptor(), result));
-        }
-        
-        
-        private String findConfiguredSoundForResult(PluginDescriptor descriptor, BuildResult result) {
-            switch (result) {
-                case SUCCESS:
-                    return descriptor.getSuccessSoundUrl();
-                    
-                case FAILURE:
-                    return descriptor.getFailureSoundUrl();
-
-                default:
-                    throw new IllegalArgumentException("unknown result-type " + result);
-            }
         }
     }
 }

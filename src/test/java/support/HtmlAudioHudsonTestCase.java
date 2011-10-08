@@ -43,7 +43,12 @@ public class HtmlAudioHudsonTestCase extends HudsonTestCase {
     @Override
     protected void setUp() throws Exception {
         System.setProperty(TMP_DIR_PROP, testTmpDir.getAbsolutePath());
+        
+        if (testTmpDir.exists()) {
+            recursiveDelete(testTmpDir);
+        }
         assertTrue(testTmpDir.mkdir());
+        
         super.setUp();
     }
     
