@@ -20,6 +20,17 @@ public class NotificationCleanupServiceTest {
     
     private final List<Notification> notifications = new ArrayList<Notification>();
     
+    private final DefaultNotificationCleanupService svc = new DefaultNotificationCleanupService();
+    
+    
+    {
+        svc.setNotificationRepository(new NotificationRepositoryAdapter() {
+            @Override public void remove(NotificationRemover remover) {
+                remover.remove(notifications.iterator());
+            }
+        });
+    }
+    
     
     @Test
     public void notifications_of_expected_age_are_removed_from_repository() {
@@ -34,16 +45,7 @@ public class NotificationCleanupServiceTest {
         notifications.addAll(asList(n1, n2, n3, n4, n5));
         
         // everything older than 1 minute should be removed
-        removeExpired();
+        svc.removeExpired();
         assertEquals(asList(n1, n2, n5), notifications);
-    }
-    
-    
-    private void removeExpired() {
-        new DefaultNotificationCleanupService().removeExpired(new NotificationRepositoryAdapter() {
-            @Override public void remove(NotificationRemover remover) {
-                remover.remove(notifications.iterator());
-            }
-        });
     }
 }

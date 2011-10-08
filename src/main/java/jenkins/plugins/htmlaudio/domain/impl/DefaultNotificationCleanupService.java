@@ -16,8 +16,15 @@ public class DefaultNotificationCleanupService implements NotificationCleanupSer
     
     private static final long MAX_AGE_MS = TimeUnit.MINUTES.toMillis(1);
     
+    private NotificationRepository repo;
     
-    public void removeExpired(NotificationRepository repo) {
+    
+    public void setNotificationRepository(NotificationRepository repo) {
+        this.repo = repo;
+    }
+    
+    
+    public void removeExpired() {
         
         repo.remove(new NotificationRemover() {
             public void remove(Iterator<Notification> notifications) {

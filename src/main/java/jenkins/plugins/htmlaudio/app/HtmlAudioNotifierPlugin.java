@@ -3,7 +3,6 @@ package jenkins.plugins.htmlaudio.app;
 import jenkins.model.Jenkins;
 import jenkins.plugins.htmlaudio.app.impl.DefaultNotificationService;
 import jenkins.plugins.htmlaudio.app.impl.PluginConfiguration;
-import jenkins.plugins.htmlaudio.domain.NotificationCleanupService;
 import jenkins.plugins.htmlaudio.domain.impl.DefaultNotificationCleanupService;
 import jenkins.plugins.htmlaudio.domain.impl.VolatileNotificationRepositoryAndFactory;
 import jenkins.plugins.htmlaudio.interfaces.Controller;
@@ -38,8 +37,10 @@ public final class HtmlAudioNotifierPlugin extends Plugin implements Describable
         final VolatileNotificationRepositoryAndFactory notificationRepoAndFactory
             = new VolatileNotificationRepositoryAndFactory();
 
-        final NotificationCleanupService notificationCleanupService
+        final DefaultNotificationCleanupService notificationCleanupService
             = new DefaultNotificationCleanupService();
+        
+        notificationCleanupService.setNotificationRepository(notificationRepoAndFactory);
         
         final HtmlAudioNotifierPlugin plugin = Jenkins.getInstance().getPlugin(HtmlAudioNotifierPlugin.class);
         final PluginConfiguration configuration = getComponent(PluginConfiguration.class);

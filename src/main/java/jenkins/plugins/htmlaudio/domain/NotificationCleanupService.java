@@ -8,6 +8,6 @@ package jenkins.plugins.htmlaudio.domain;
  */
 public interface NotificationCleanupService {
     
-    void removeExpired(NotificationRepository repository);
+    void removeExpired();
 
 }
