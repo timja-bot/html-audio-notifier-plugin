@@ -1,8 +1,9 @@
 <j:jelly xmlns:j="jelly:core">
     <j:set var="pluginUrl" value="${request.contextPath}/plugin/html-audio-notifier"/>
-	
-	<link rel="stylesheet" type="text/css" href="${pluginUrl}/css/client.css" />
-	<script type="text/javascript" src="${pluginUrl}/scripts/client.js" />
-	<script type="text/javascript" src="${pluginUrl}/scripts/player.js" />
-	<script type="text/javascript" src="${pluginUrl}/scripts/cookies.js" />
+
+    <link rel="stylesheet" type="text/css" href="${pluginUrl}/css/client.css" />
+    <script type="text/javascript" src="${pluginUrl}/scripts/cookies.js" />
+    <script type="text/javascript" src="${pluginUrl}/scripts/utils.js" />
+    <script type="text/javascript" src="${pluginUrl}/scripts/client.js" />
+    <script type="text/javascript" src="${pluginUrl}/scripts/player.js" />
 </j:jelly>

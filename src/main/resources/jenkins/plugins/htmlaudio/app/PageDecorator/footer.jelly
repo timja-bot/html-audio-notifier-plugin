@@ -13,7 +13,7 @@
 
     <script type="text/javascript">
         htmlAudioNotifierClient = new HtmlAudioNotifierClient(
-            '${request.contextPath}/html-audio',
+            '${app.rootUrlFromRequest}',
             document.getElementById('htmlAudioNotifierPanel')
         );
     </script>

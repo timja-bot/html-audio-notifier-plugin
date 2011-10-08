@@ -4,8 +4,8 @@
 var HtmlAudioNotifierClient = Class.create();
 HtmlAudioNotifierClient.prototype = {
 
-    initialize: function(url, uiElement) {
-        this.url = url;
+    initialize: function(rootUrl, uiElement) {
+        this.rootUrl = rootUrl;
         this.uiElement = uiElement;
         this.player = new AudioPlayer();
         this.executor = null;
@@ -15,7 +15,7 @@ HtmlAudioNotifierClient.prototype = {
         if (enabled == null) {
             var that = this;
 
-            new Ajax.Request(url + "/isEnabledByDefault", {
+            new Ajax.Request(rootUrl + "html-audio/isEnabledByDefault", {
                 method: 'post',
                 onSuccess: function(t) {
                     var enabled = t.responseText.evalJSON(true).enabled;
@@ -77,7 +77,7 @@ HtmlAudioNotifierClient.prototype = {
 
     poll: function(client) {
 
-        new Ajax.Request(client.url + "/next", {
+        new Ajax.Request(client.rootUrl + "html-audio/next", {
             method: 'post',
             parameters: {
                 previous: client.getPreviousNotification()
@@ -92,7 +92,7 @@ HtmlAudioNotifierClient.prototype = {
 
                 client.setPreviousNotification(result.currentNotification);
                 result.notifications.each(function(src) {
-                    client.player.enqueue(src);
+                    client.player.enqueue(toAbsoluteUrl(client.rootUrl, src));
                 });
             }
         });

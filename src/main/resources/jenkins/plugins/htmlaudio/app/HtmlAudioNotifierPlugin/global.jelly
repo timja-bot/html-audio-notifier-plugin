@@ -31,15 +31,8 @@
           }, false);
           
           function testSound(soundId) {
-              var source = document.getElementById(soundId).value;
-              
-              new Ajax.Request("${request.contextPath}/html-audio/toAbsoluteUrl", {
-                  method: 'post',
-                  parameters: { url: source },
-                  onSuccess: function(t) {
-                      player.enqueue(t.responseText);
-                  }
-              });
+              var url = document.getElementById(soundId).value;
+              player.enqueue(toAbsoluteUrl('${app.rootUrlFromRequest}', url));
           }
       </script>
     </f:section>
