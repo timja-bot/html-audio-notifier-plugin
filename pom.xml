@@ -32,6 +32,11 @@
       <email>lars@hulte.net</email>
     </developer>
   </developers>
+  
+  <ciManagement>
+    <system>jenkins</system>
+    <url>https://ci.hulte.net</url>
+  </ciManagement>
 
   <repositories>
     <repository>
