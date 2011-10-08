@@ -7,6 +7,7 @@ import hudson.model.FreeStyleBuild;
 import hudson.model.FreeStyleProject;
 import hudson.model.Result;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,12 +32,49 @@ import org.jvnet.hudson.test.TestBuilder;
  */
 public class HtmlAudioHudsonTestCase extends HudsonTestCase {
     
+    private static final String TMP_DIR_PROP = "java.io.tmpdir";
+    
+    private final String systemTmpDir = System.getProperty(TMP_DIR_PROP);
+    private final File testTmpDir = new File(systemTmpDir, getClass().getSimpleName());
+    
     private final HttpClient httpClient = new HttpClient();
     
     
-    // TODO create/wipe a custom java.io.tmpdir for these tests??
+    @Override
+    protected void setUp() throws Exception {
+        System.setProperty(TMP_DIR_PROP, testTmpDir.getAbsolutePath());
+        assertTrue(testTmpDir.mkdir());
+        super.setUp();
+    }
     
     
+    @Override
+    protected void tearDown() throws Exception {
+        super.tearDown();
+        System.setProperty(TMP_DIR_PROP, systemTmpDir);
+        recursiveDelete(testTmpDir);
+    }
+    
+    
+    private void recursiveDelete(File dir) {
+        for (File f : dir.listFiles()) {
+            if (f.isDirectory()) {
+                recursiveDelete(f);
+            } else {
+                delete(f);
+            }
+        }
+        delete(dir);
+    }
+    
+    
+    private void delete(File f) {
+        if (!f.delete()) {
+            f.deleteOnExit();
+        }
+    }
+
+
     protected final PluginDescriptor getConfig() {
         return jenkins.getPlugin(HtmlAudioNotifierPlugin.class).getDescriptor();
     }

@@ -1,4 +1,4 @@
-package jenkins.plugins;
+package jenkins.plugins.htmlaudio_component;
 
 import jenkins.plugins.htmlaudio.app.HtmlAudioNotifierPlugin;
 import jenkins.plugins.htmlaudio.app.HtmlAudioNotifierPlugin.PluginDescriptor;
@@ -12,16 +12,11 @@ import com.gargoylesoftware.htmlunit.html.HtmlForm;
 import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
 
 
-/**
- * TODO no longer accurate
- * Contains component-/acceptance-tests using a running Jenkins instance. These tests were originally 
- * in multiple test-files, but {@link HudsonTestCase} seems to have some issues with doing proper cleanup / 
- * reset between tests, so they're all embedded in this class now. 
- * 
+/** 
  * @author Lars Hvile
  */
 @RunWith(JUnit38ClassRunner.class)
-public class HtmlAudioNotifierPluginAcceptanceTest extends HudsonTestCase {
+public class HtmlAudioNotifierPluginComponentTest extends HudsonTestCase {
     
     public void test_configuration_does_not_change_by_accident() throws Exception {
         final PluginDescriptor config = getConfig();
@@ -41,6 +36,13 @@ public class HtmlAudioNotifierPluginAcceptanceTest extends HudsonTestCase {
         config.setFailureSoundUrl(null);
         configRoundtrip();
         assertFalse(config.isEnabledByDefault());
+        assertEquals(null, config.getSuccessSoundUrl());
+        assertEquals(null, config.getFailureSoundUrl());
+
+        // value-set #3, empty URLs -> null
+        config.setSuccessSoundUrl("");
+        config.setFailureSoundUrl("\t");
+        configRoundtrip();
         assertEquals(null, config.getSuccessSoundUrl());
         assertEquals(null, config.getFailureSoundUrl());
     }
@@ -72,8 +74,4 @@ public class HtmlAudioNotifierPluginAcceptanceTest extends HudsonTestCase {
         assertEquals("success", config.getSuccessSoundUrl());
         assertEquals("failure", config.getFailureSoundUrl());
     }
-    
-    
-    // TODO some of the former tests please.. fail a build, make sure it's available to clients
-    
 }

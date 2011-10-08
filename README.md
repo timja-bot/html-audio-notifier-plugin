@@ -11,7 +11,7 @@ Development
 
 Creating an eclipse-project
 ---------------------------
-mvn -DdownloadJavadocs=true -DdownloadSources=true -DdownloadJavadocs=true eclipse:eclipse
+mvn eclipse:eclipse
 
 Running the plugin locally
 --------------------------

@@ -9,6 +9,9 @@ import org.junit.runner.RunWith;
 import support.HtmlAudioHudsonTestCase;
 
 
+/** 
+ * @author Lars Hvile
+ */
 @RunWith(JUnit38ClassRunner.class)
 public class ControllerComponentTest extends HtmlAudioHudsonTestCase {
     
