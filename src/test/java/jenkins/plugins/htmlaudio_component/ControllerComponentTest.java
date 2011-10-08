@@ -51,8 +51,8 @@ public class ControllerComponentTest extends HtmlAudioHudsonTestCase {
         getConfig().setSuccessSoundUrl("successUrl");
         getConfig().setFailureSoundUrl("failureUrl");
         
-        svc.recordBuildCompletion("job1", Result.SUCCESS);
-        svc.recordBuildCompletion("job2", Result.FAILURE);
+        svc.recordBuildCompletion("job1", Result.SUCCESS, null);
+        svc.recordBuildCompletion("job2", Result.FAILURE, null);
         
         assertEquals("{\"currentNotification\":\"2\",\"notifications\":[\"successUrl\",\"failureUrl\"]}",
             invoke("next",

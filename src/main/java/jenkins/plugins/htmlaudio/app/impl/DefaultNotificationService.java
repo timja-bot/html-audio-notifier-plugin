@@ -72,10 +72,10 @@ public final class DefaultNotificationService implements NotificationService {
     }
     
     
-    public void recordBuildCompletion(String buildDetails, Result result) {
+    public void recordBuildCompletion(String buildDetails, Result result, Result previousResult) {
         cleanupService.removeExpired(); // TODO doesn't really belong here?
         
-        final String soundUrl = getSoundForResult(result);
+        final String soundUrl = getSoundForResult(result, previousResult);
         if (soundUrl == null) {
             return;
         }
@@ -85,8 +85,8 @@ public final class DefaultNotificationService implements NotificationService {
     }
     
     
-    private String getSoundForResult(Result result) {
-        final BuildResult br = toBuildResult(result);
+    private String getSoundForResult(Result result, Result previousResult) {
+        final BuildResult br = toBuildResult(result, previousResult);
         return br == null
             ? null
             : configuration.getSoundUrl(br);

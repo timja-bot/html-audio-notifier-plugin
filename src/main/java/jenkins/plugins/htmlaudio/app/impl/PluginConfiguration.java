@@ -38,6 +38,9 @@ public final class PluginConfiguration implements Configuration {
             case SUCCESS:
                 return descriptor.getSuccessSoundUrl();
                 
+            case SUCCESS_AFTER_FAILURE:
+                return descriptor.getSuccessAfterFailureSoundUrl();
+                
             case FAILURE:
                 return descriptor.getFailureSoundUrl();
 

@@ -13,7 +13,8 @@ import hudson.model.listeners.RunListener;
  * @author Lars Hvile
  */
 @Extension
-public final class RunResultListener extends RunListener<Run<?, ?>> {
+@SuppressWarnings("rawtypes")
+public final class RunResultListener extends RunListener<Run> {
     
     private NotificationService notificationService;
     
@@ -24,9 +25,14 @@ public final class RunResultListener extends RunListener<Run<?, ?>> {
     
     
     @Override
-    public void onCompleted(Run<?, ?> run, TaskListener listener) {
+    public void onCompleted(Run run, TaskListener listener) {
+        final Run previousBuild = run.getPreviousBuild();
         
-        notificationService.recordBuildCompletion(run.getFullDisplayName(),
-                run.getResult());
+        notificationService.recordBuildCompletion(
+            run.getFullDisplayName(),
+            run.getResult(),
+            previousBuild == null
+                ? null
+                : previousBuild.getResult());
     }
 }

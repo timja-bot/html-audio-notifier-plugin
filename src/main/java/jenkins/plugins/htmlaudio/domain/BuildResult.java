@@ -9,29 +9,36 @@ import hudson.model.Result;
  * @author Lars Hvile
  */
 public enum BuildResult {
+
+    SUCCESS_AFTER_FAILURE {
+        @Override
+        protected boolean matches(Result current, Result previous) {
+            return current == Result.SUCCESS
+                && isFailure(previous);
+        }
+    },
     
     FAILURE {
         @Override
-        protected boolean matches(Result r) {
-            return r == Result.FAILURE
-                    || r == Result.UNSTABLE;
+        protected boolean matches(Result current, Result previous) {
+            return isFailure(current);
         }
     },
     
     SUCCESS {
         @Override
-        protected boolean matches(Result r) {
-            return r == Result.SUCCESS;
+        protected boolean matches(Result current, Result previous) {
+            return current == Result.SUCCESS;
         }
     };
     
     
     /**
-     * Returns a {@link BuildResult} matching a provided {@link Result} or {@code null}.
+     * Returns a {@link BuildResult} matching a provided set of {@link Result}s or {@code null}.
      */
-    public static BuildResult toBuildResult(Result r) {
+    public static BuildResult toBuildResult(Result current, Result previous) {
         for (BuildResult br : BuildResult.values()) {
-            if (br.matches(r)) {
+            if (br.matches(current, previous)) {
                 return br;
             }
         }
@@ -39,5 +46,11 @@ public enum BuildResult {
     }
     
     
-    protected abstract boolean matches(Result r);
+    private static boolean isFailure(Result r) {
+        return Result.FAILURE == r
+            || Result.UNSTABLE == r;
+    }
+    
+    
+    protected abstract boolean matches(Result current, Result previous);
 }

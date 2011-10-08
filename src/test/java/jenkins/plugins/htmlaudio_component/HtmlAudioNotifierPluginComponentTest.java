@@ -24,19 +24,23 @@ public class HtmlAudioNotifierPluginComponentTest extends HudsonTestCase {
         // value-set #1
         config.setEnabledByDefault(true);
         config.setSuccessSoundUrl("s");
+        config.setSuccessAfterFailureSoundUrl("sf");
         config.setFailureSoundUrl("f");
         configRoundtrip();
         assertTrue(config.isEnabledByDefault());
         assertEquals("s", config.getSuccessSoundUrl());
+        assertEquals("sf", config.getSuccessAfterFailureSoundUrl());
         assertEquals("f", config.getFailureSoundUrl());
         
         // value-set #2
         config.setEnabledByDefault(false);
         config.setSuccessSoundUrl(null);
+        config.setSuccessAfterFailureSoundUrl(null);
         config.setFailureSoundUrl(null);
         configRoundtrip();
         assertFalse(config.isEnabledByDefault());
         assertEquals("", config.getSuccessSoundUrl());
+        assertEquals("", config.getSuccessAfterFailureSoundUrl());
         assertEquals("", config.getFailureSoundUrl());
     }
     
@@ -51,6 +55,7 @@ public class HtmlAudioNotifierPluginComponentTest extends HudsonTestCase {
         
         config.setEnabledByDefault(false);
         config.setSuccessSoundUrl(null);
+        config.setSuccessAfterFailureSoundUrl(null);
         config.setFailureSoundUrl(null);
         
         HtmlForm form = createWebClient()
@@ -59,12 +64,14 @@ public class HtmlAudioNotifierPluginComponentTest extends HudsonTestCase {
 
         ((HtmlCheckBoxInput)form.getInputByName("htmlAudioEnabledByDefault")).setChecked(true);
         ((HtmlTextInput)form.getInputByName("htmlAudioSuccessSoundUrl")).setValueAttribute("success");
+        ((HtmlTextInput)form.getInputByName("htmlAudioSuccessAfterFailureSoundUrl")).setValueAttribute("successAfter");
         ((HtmlTextInput)form.getInputByName("htmlAudioFailureSoundUrl")).setValueAttribute("failure");
         
         submit(form);
         
         assertTrue(config.isEnabledByDefault());
         assertEquals("success", config.getSuccessSoundUrl());
+        assertEquals("successAfter", config.getSuccessAfterFailureSoundUrl());
         assertEquals("failure", config.getFailureSoundUrl());
     }
 }

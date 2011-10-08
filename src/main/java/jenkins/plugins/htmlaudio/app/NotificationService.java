@@ -23,8 +23,9 @@ public interface NotificationService {
      * Records the completion of a build, which may turn out to generate a notification.
      * 
      * @param buildDetails a simple string-representation of the build that completed
-     * @param result the build-outcome
+     * @param result the outcome of the build
+     * @param previousResult the outcome of the previous build or {@code null}
      */
-    void recordBuildCompletion(String buildDetails, Result result);
+    void recordBuildCompletion(String buildDetails, Result result, Result previousResult);
     
 }

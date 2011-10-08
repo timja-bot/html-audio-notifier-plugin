@@ -13,6 +13,12 @@
           <input type="button" value="Test" onClick="testSound('htmlAudioSuccessSoundUrl')" />
       </f:entry>
       
+      <f:entry title="Success-after-failure sound URL" help="/plugin/html-audio-notifier/help-globalConfig-sounds.html">
+          <f:textbox id="htmlAudioSuccessAfterFailureSoundUrl" name="htmlAudioSuccessAfterFailureSoundUrl"
+            value="${descriptor.successAfterFailureSoundUrl}" />
+          <input type="button" value="Test" onClick="testSound('htmlAudioSuccessAfterFailureSoundUrl')" />
+      </f:entry>
+      
       <f:entry title="Failure sound URL" help="/plugin/html-audio-notifier/help-globalConfig-sounds.html">
           <f:textbox id="htmlAudioFailureSoundUrl" name="htmlAudioFailureSoundUrl"
             value="${descriptor.failureSoundUrl}" />

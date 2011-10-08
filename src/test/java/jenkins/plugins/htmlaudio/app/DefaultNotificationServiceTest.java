@@ -126,15 +126,15 @@ public class DefaultNotificationServiceTest {
     
     @Test
     public void notification_is_not_created_for_unsupported_result() {
-        svc.recordBuildCompletion(null, Result.ABORTED);
+        svc.recordBuildCompletion("build1", Result.ABORTED, null);
         verifyZeroInteractions(notificationFactory);
     }
     
     
     @Test
     public void notification_is_not_created_if_no_sound_is_configured() {
-        svc.recordBuildCompletion(null, Result.SUCCESS);
-        verify(configuration).getSoundUrl(BuildResult.SUCCESS);
+        svc.recordBuildCompletion("build2", Result.SUCCESS, Result.FAILURE);
+        verify(configuration).getSoundUrl(BuildResult.SUCCESS_AFTER_FAILURE);
         verifyZeroInteractions(notificationFactory);
     }
     
@@ -144,9 +144,9 @@ public class DefaultNotificationServiceTest {
         when(configuration.getSoundUrl(BuildResult.FAILURE))
             .thenReturn("url");
         
-        svc.recordBuildCompletion("details", Result.FAILURE);
+        svc.recordBuildCompletion("build3", Result.FAILURE, null);
         
         verify(configuration).getSoundUrl(BuildResult.FAILURE);
-        verify(notificationFactory).createAndPersist("url", "details");
+        verify(notificationFactory).createAndPersist("url", "build3");
     }   
 }

@@ -22,7 +22,7 @@ public class PluginAcceptanceTest extends HtmlAudioHudsonTestCase {
     }
     
     
-    public void test_failed_build_results_in_notification() {
+    public void test_a_failed_build_results_in_a_notification() {
         assertFalse(isNotificationAvailable());
         failSomeBuild();
         assertTrue(isNotificationAvailable());

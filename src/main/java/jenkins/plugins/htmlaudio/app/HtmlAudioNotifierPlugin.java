@@ -76,7 +76,8 @@ public final class HtmlAudioNotifierPlugin extends Plugin implements Describable
     public static final class PluginDescriptor extends Descriptor<HtmlAudioNotifierPlugin> {
         
         private volatile boolean enabledByDefault = false;
-        private volatile String successSoundUrl = "pop.wav";
+        private volatile String successSoundUrl = "";
+        private volatile String successAfterFailureSoundUrl = "pop.wav";
         private volatile String failureSoundUrl = "horse.wav";
         
         
@@ -95,6 +96,7 @@ public final class HtmlAudioNotifierPlugin extends Plugin implements Describable
         public boolean configure(StaplerRequest req, JSONObject json) throws FormException { 
             enabledByDefault = json.getBoolean("htmlAudioEnabledByDefault");
             successSoundUrl = json.getString("htmlAudioSuccessSoundUrl");
+            successAfterFailureSoundUrl = json.getString("htmlAudioSuccessAfterFailureSoundUrl");
             failureSoundUrl = json.getString("htmlAudioFailureSoundUrl");
             save();
             return super.configure(req, json);
@@ -118,6 +120,16 @@ public final class HtmlAudioNotifierPlugin extends Plugin implements Describable
         
         public void setSuccessSoundUrl(String successSoundUrl) {
             this.successSoundUrl = successSoundUrl;
+        }
+        
+        
+        public String getSuccessAfterFailureSoundUrl() {
+            return successAfterFailureSoundUrl;
+        }
+        
+        
+        public void setSuccessAfterFailureSoundUrl(String successAfterFailureSoundUrl) {
+            this.successAfterFailureSoundUrl = successAfterFailureSoundUrl;
         }
         
         
