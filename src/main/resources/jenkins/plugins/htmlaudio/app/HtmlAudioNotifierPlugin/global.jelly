@@ -2,7 +2,7 @@
     xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
   
     <f:section title="HTML audio notifications">
-      
+    
       <f:entry title="Enabled by default">
           <f:checkbox name="htmlAudioEnabledByDefault" checked="${descriptor.enabledByDefault}" />
       </f:entry>
@@ -25,20 +25,40 @@
           <input type="button" value="Test" onClick="testSound('htmlAudioFailureSoundUrl')" />
       </f:entry>
       
+      <f:entry title="Themes">
+          <a href="#" onclick="superMarioMode(); return false;" title="Maaaario">
+              <img src="${request.contextPath}/plugin/html-audio-notifier/images/mario.png" />
+          </a>
+      </f:entry>
+      
       <script type="text/javascript">
-          player = new AudioPlayer();
+          testPlayer = new AudioPlayer();
+          themePlayer = new AudioPlayer();
           
-          player.player.addEventListener('ended', function() {
+          testPlayer.player.addEventListener('ended', function() {
               alert('Completed..');
           }, false);
           
-          player.player.addEventListener('error', function() {
+          testPlayer.player.addEventListener('error', function() {
               alert('Failed.\nMake sure that the URL is correct or try a different file-format..');
           }, false);
           
           function testSound(soundId) {
               var url = document.getElementById(soundId).value;
-              player.enqueue(toAbsoluteUrl('${app.rootUrlFromRequest}', url));
+              testPlayer.enqueue(toAbsoluteUrl('${app.rootUrlFromRequest}', url));
+          }
+          
+          function superMarioMode() {
+              setTheme('http://themushroomkingdom.net/sounds/wav/smb/smb_kick.wav',
+                'http://themushroomkingdom.net/sounds/wav/smb/smb_powerup.wav',
+                'http://themushroomkingdom.net/sounds/wav/smb/smb_mariodie.wav')
+              themePlayer.enqueue('http://themushroomkingdom.net/sounds/wav/sm64_memario.wav')
+          }
+          
+          function setTheme(success, successAfterFailure, failure) {
+              document.getElementById('htmlAudioSuccessSoundUrl').value = success
+              document.getElementById('htmlAudioSuccessAfterFailureSoundUrl').value = successAfterFailure
+              document.getElementById('htmlAudioFailureSoundUrl').value = failure
           }
       </script>
     </f:section>
