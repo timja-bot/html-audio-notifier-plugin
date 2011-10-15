@@ -32,6 +32,8 @@ public class DefaultNotificationCleanupService implements NotificationCleanupSer
                 while (notifications.hasNext()) {
                     if (tooOld(notifications.next())) {
                         notifications.remove();
+                    } else {
+                        break;
                     }
                 }
             }

@@ -148,5 +148,14 @@ public class DefaultNotificationServiceTest {
         
         verify(configuration).getSoundUrl(BuildResult.FAILURE);
         verify(notificationFactory).createAndPersist("url", "build3");
-    }   
+    }
+    
+    
+    @Test
+    public void expired_notifications_are_removed_when_finding_or_recording_notifications() {
+        svc.recordBuildCompletion("", Result.SUCCESS, null);
+        svc.findNewNotifications(null);
+        
+        verify(notificationCleanupService, times(2)).removeExpired();
+    }
 }

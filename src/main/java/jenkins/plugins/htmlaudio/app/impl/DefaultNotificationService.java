@@ -53,7 +53,7 @@ public final class DefaultNotificationService implements NotificationService {
     
     
     public NewNotificationsResult findNewNotifications(NotificationId previous) {
-        cleanupService.removeExpired(); // TODO doesn't really belong here?
+        cleanupService.removeExpired();
         
         final NotificationId lastNotificationIdBeforeQuery = repo.getLastNotificationId();
         final List<Notification> notifications = repo.findNewerThan(previous);
@@ -73,7 +73,7 @@ public final class DefaultNotificationService implements NotificationService {
     
     
     public void recordBuildCompletion(String buildDetails, Result result, Result previousResult) {
-        cleanupService.removeExpired(); // TODO doesn't really belong here?
+        cleanupService.removeExpired();
         
         final String soundUrl = getSoundForResult(result, previousResult);
         if (soundUrl == null) {
