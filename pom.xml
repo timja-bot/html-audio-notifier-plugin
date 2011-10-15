@@ -10,7 +10,7 @@
   <groupId>jenkins.plugins.htmlaudio</groupId>
   <artifactId>html-audio-notifier</artifactId>
   <url>https://wiki.jenkins-ci.org/display/JENKINS/Html+Audio+Notifier</url>
-  <version>0.3</version>
+  <version>0.4-SNAPSHOT</version>
   <packaging>hpi</packaging>
   
   <name>HTML Audio Notifier</name>
