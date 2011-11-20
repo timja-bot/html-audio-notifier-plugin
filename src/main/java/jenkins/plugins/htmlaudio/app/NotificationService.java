@@ -12,12 +12,14 @@ public interface NotificationService {
     
     /**
      * Returns every {@link Notification} that has been registered after the previously encountered
-     * notification.
+     * notification, or waits for new ones to arrive.
      * 
      * @param previous the last encountered {@link NotificationId} or {@code null} to list all each one
+     * @param timeoutMs the number of milliseconds to wait for new notifications before returning an empty
+     *  result
      * @return a {@link NewNotificationsResult}
      */
-    NewNotificationsResult findNewNotifications(NotificationId previous);
+    NewNotificationsResult waitForNewNotifications(NotificationId previous, long timeoutMs);
     
     /**
      * Records the completion of a build, which may turn out to generate a notification.

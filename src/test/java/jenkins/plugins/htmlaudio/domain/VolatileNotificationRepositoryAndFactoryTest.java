@@ -3,11 +3,14 @@ package jenkins.plugins.htmlaudio.domain;
 import static java.util.Arrays.asList;
 import static jenkins.plugins.htmlaudio.domain.NotificationId.asNotificationId;
 import static org.junit.Assert.*;
+import static support.ConcurrencyUtils.assertExecutionTimeLessThanMs;
+import static support.ConcurrencyUtils.await;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.concurrent.CountDownLatch;
 
 import jenkins.plugins.htmlaudio.domain.NotificationRepository.NotificationRemover;
 import jenkins.plugins.htmlaudio.domain.impl.VolatileNotificationRepositoryAndFactory;
@@ -15,6 +18,8 @@ import jenkins.plugins.htmlaudio.domain.impl.VolatileNotificationRepositoryAndFa
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+
+import support.ConcurrencyUtils;
 
 
 @RunWith(JUnit4.class)
@@ -265,5 +270,30 @@ public class VolatileNotificationRepositoryAndFactoryTest {
         
         repo.findNewerThan(null).clear();
         assertEquals(1, repo.findNewerThan(null).size());
+    }
+    
+    
+    @Test
+    public void clients_are_notified_when_new_notifications_are_available() {
+        final CountDownLatch clientWaiting = new CountDownLatch(1);
+        final CountDownLatch clientNotified = new CountDownLatch(1);
+        
+        new Thread() {
+            @Override public void run() {
+                synchronized (repo) {
+                    clientWaiting.countDown();
+                    ConcurrencyUtils.wait(repo);
+                    clientNotified.countDown();
+                }
+            };
+        }.start();
+        await(clientWaiting);
+        
+        assertExecutionTimeLessThanMs(1000, new Runnable() {
+            public void run() {
+                createNotification();
+                await(clientNotified);
+            }
+        });
     }
 }

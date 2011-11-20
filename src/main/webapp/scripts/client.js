@@ -8,63 +8,44 @@ HtmlAudioNotifierClient.prototype = {
         this.rootUrl = rootUrl;
         this.uiElement = uiElement;
         this.player = new AudioPlayer();
-        this.executor = null;
+        this.enabled = null;
 
-        var enabled = this.isEnabled();
-
-        if (enabled == null) {
+        if (this.isEnabled != null) {
+            this.enable(this.isEnabled());
+        } else {
+            this.enable(false);
+            
             var that = this;
-
             new Ajax.Request(rootUrl + "html-audio/isEnabledByDefault", {
                 method: 'post',
                 onSuccess: function(t) {
                     var enabled = t.responseText.evalJSON(true).enabled;
                     that.enable(enabled);
-                },
-                onFailure: function() {
-                    that.enable(false);
                 }
             });
-        } else {
-            this.enable(enabled);
         }
     },
 
     isEnabled: function() {
+        if (this.enabled != null) {
+            return this.enabled;
+        }
+        
         var val = readCookie("htmlAudioNotificationsEnabled");
         return val == null ? null : val == 'true';
     },
 
     toggle: function() {
-        this.enable(this.executor == null);
+        this.enable(!this.isEnabled());
     },
 
     enable: function(enabled) {
-
-        if (enabled) {
-            this.start();
-        } else {
-            this.stop();
-        }
-
         this.showEnabledState(enabled)
         this.storeEnabledState(enabled);
-    },
-
-    start: function() {
-        this.stop();
-
-        var that = this;
-        this.executor = new PeriodicalExecuter(function() {
-            that.poll(that)
-        }, 5);
-    },
-
-    stop: function() {
-        if (this.executor != null) {
-            this.executor.stop();
+        
+        if (enabled) {
+            this.schedule(this, true);
         }
-        this.executor = null;
     },
 
     showEnabledState: function(enabled) {
@@ -72,11 +53,37 @@ HtmlAudioNotifierClient.prototype = {
     },
 
     storeEnabledState: function(enabled) {
+        this.enabled = enabled;
         createCookie("htmlAudioNotificationsEnabled", enabled, 30);
     },
 
+    schedule: function(client, immediately) {
+        client.clearFailureHandler(client);
+        
+        setTimeout(function() {
+            client.registerFailureHandler(client);
+            client.poll(client);
+        }, (immediately ? 5 : 50) * 100);
+    },
+    
+    registerFailureHandler: function(client) {
+        client.failureHandler = setTimeout(function() {
+            client.schedule(client, false);
+        }, 60 * 1000);
+    },
+    
+    clearFailureHandler: function(client) {
+        if (client.failureHandler != null) {
+            clearTimeout(client.failureHandler)
+            client.failureHandler = null;
+        }
+    },
+    
     poll: function(client) {
-
+        if (!client.isEnabled()) {
+            return;
+        }
+        
         new Ajax.Request(client.rootUrl + "html-audio/next", {
             method: 'post',
             parameters: {
@@ -94,6 +101,12 @@ HtmlAudioNotifierClient.prototype = {
                 result.notifications.each(function(src) {
                     client.player.enqueue(toAbsoluteUrl(client.rootUrl, src));
                 });
+                
+                client.schedule(client, result.longPolling);
+            },
+            
+            onFailure: function() {
+                client.schedule(client);
             }
         });
     },

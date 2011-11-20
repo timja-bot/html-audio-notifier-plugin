@@ -49,6 +49,8 @@ public final class VolatileNotificationRepositoryAndFactory implements Notificat
             index.add(n.getId());
             notifications.add(n);
             
+            notifyAll();
+            
             return n;
         }
     }

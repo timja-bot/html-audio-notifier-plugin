@@ -28,6 +28,11 @@ public final class PluginConfiguration implements Configuration {
     }
     
     
+    public boolean isLongPollingEnabled() {
+        return descriptor.isLongPollingEnabled();
+    }
+    
+    
     public String getSoundUrl(BuildResult result) {
         return nullIfEmpty(findConfiguredSoundForResult(descriptor, result));
     }

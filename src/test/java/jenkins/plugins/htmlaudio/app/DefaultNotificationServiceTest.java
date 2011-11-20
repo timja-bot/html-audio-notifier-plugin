@@ -5,10 +5,14 @@ import static java.util.Collections.emptyList;
 import static jenkins.plugins.htmlaudio.domain.NotificationId.asNotificationId;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
+import static support.ConcurrencyUtils.assertExecutionTimeLessThanMs;
+import static support.ConcurrencyUtils.await;
 
 import hudson.model.Result;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 
 import jenkins.plugins.htmlaudio.app.impl.DefaultNotificationService;
 import jenkins.plugins.htmlaudio.domain.BuildResult;
@@ -23,6 +27,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.mockito.InOrder;
+
+import support.ConcurrencyUtils;
 
 
 @RunWith(JUnit4.class)
@@ -49,7 +55,7 @@ public class DefaultNotificationServiceTest {
     public void query_for_new_notifications_results_in_expected_repository_invocations() {
         final NotificationId id = asNotificationId(1);
         
-        svc.findNewNotifications(id);
+        svc.waitForNewNotifications(id, 0);
         
         /*
          * The ordering here _is_ important. Since we don't want any external locking around the repo-usage,
@@ -69,7 +75,7 @@ public class DefaultNotificationServiceTest {
         when(notificationRepo.findNewerThan(null))
             .thenReturn(noNotifications);
         
-        final NewNotificationsResult result = svc.findNewNotifications(null);
+        final NewNotificationsResult result = svc.waitForNewNotifications(null, 0);
         
         assertNull(result.getLastNotificationId());
         assertTrue(result.getNotifications().isEmpty());
@@ -83,9 +89,69 @@ public class DefaultNotificationServiceTest {
         when(notificationRepo.findNewerThan(null))
             .thenReturn(noNotifications);
         
-        final NewNotificationsResult result = svc.findNewNotifications(null);
+        final NewNotificationsResult result = svc.waitForNewNotifications(null, 0);
         assertEquals(asNotificationId(123), result.getLastNotificationId());
         assertTrue(result.getNotifications().isEmpty());
+    }
+    
+    
+    @Test
+    public void new_notifications_are_waited_for_if_requested() {
+        
+        // stubbed repo, returns results on the 2nd invocation
+        final NotificationRepository repo = new NotificationRepoAdapter() {
+            int counter = 0;
+            
+            @Override  public List<Notification> findNewerThan(NotificationId id) {
+                return ++counter == 2
+                    ? Collections.<Notification>singletonList(new SimpleNotification(null, null, null))
+                    : Collections.<Notification>emptyList();
+            }
+            
+            @Override public NotificationId getLastNotificationId() {
+                return null;
+            }
+        };
+        svc.setNotificationRepository(repo);
+        
+        // add a new notification after 250ms
+        final CountDownLatch threadStarted = new CountDownLatch(1);
+        final CountDownLatch requestPending = new CountDownLatch(1);
+        
+        new Thread() {
+            @Override public void run() {
+                threadStarted.countDown();
+                await(requestPending);
+                ConcurrencyUtils.sleep(250);
+                synchronized (repo) {
+                    repo.notifyAll();
+                }
+            }
+        }.start();
+
+        // make sure we receive the notification without the reaching the timeout
+        await(threadStarted);
+        assertExecutionTimeLessThanMs(2000, new Runnable() {
+            public void run() {
+                requestPending.countDown();
+                assertEquals(1, svc.waitForNewNotifications(null, 10000).getNotifications().size());
+            }
+        });
+    }
+    
+    
+    @Test
+    public void available_notifications_are_delivered_immediately_even_if_polling_is_enabled() {
+        when(notificationRepo.getLastNotificationId())
+            .thenReturn(asNotificationId(123));
+        when(notificationRepo.findNewerThan(null))
+            .thenReturn(asList(n(asNotificationId(123))));
+    
+        assertExecutionTimeLessThanMs(1000, new Runnable() {
+           public void run() {
+               assertEquals(1, svc.waitForNewNotifications(null, 10000).getNotifications().size());
+            } 
+        });
     }
     
     
@@ -96,7 +162,7 @@ public class DefaultNotificationServiceTest {
         when(notificationRepo.findNewerThan(null))
             .thenReturn(asList(n(asNotificationId(123))));
     
-        final NewNotificationsResult result = svc.findNewNotifications(null);
+        final NewNotificationsResult result = svc.waitForNewNotifications(null, 0);
         assertEquals(asNotificationId(123), result.getLastNotificationId());
         assertEquals(1, result.getNotifications().size());
         assertEquals(123, result.getNotifications().get(0).getId().getValue()); 
@@ -119,7 +185,7 @@ public class DefaultNotificationServiceTest {
         when(notificationRepo.findNewerThan(null))
             .thenReturn(asList(n(asNotificationId(123)), n(asNotificationId(124))));
     
-        final NewNotificationsResult result = svc.findNewNotifications(null);
+        final NewNotificationsResult result = svc.waitForNewNotifications(null, 0);
         assertEquals(asNotificationId(124), result.getLastNotificationId());
     }
     
@@ -154,8 +220,24 @@ public class DefaultNotificationServiceTest {
     @Test
     public void expired_notifications_are_removed_when_finding_or_recording_notifications() {
         svc.recordBuildCompletion("", Result.SUCCESS, null);
-        svc.findNewNotifications(null);
+        svc.waitForNewNotifications(null, 0);
         
         verify(notificationCleanupService, times(2)).removeExpired();
+    }
+    
+    
+    private static class NotificationRepoAdapter implements NotificationRepository {
+
+        public NotificationId getLastNotificationId() {
+            throw new UnsupportedOperationException();
+        }
+
+        public List<Notification> findNewerThan(NotificationId id) {
+            throw new UnsupportedOperationException();
+        }
+
+        public void remove(NotificationRemover remover) {
+            throw new UnsupportedOperationException();
+        }
     }
 }

@@ -7,6 +7,10 @@
           <f:checkbox name="htmlAudioEnabledByDefault" checked="${descriptor.enabledByDefault}" />
       </f:entry>
       
+      <f:entry title="Enable long-polling">
+          <f:checkbox name="htmlAudioLongPollingEnabled" checked="${descriptor.longPollingEnabled}" />
+      </f:entry>
+      
       <f:entry title="Success sound URL" help="/plugin/html-audio-notifier/help-globalConfig-sounds.html">
           <f:textbox id="htmlAudioSuccessSoundUrl" name="htmlAudioSuccessSoundUrl"
             value="${descriptor.successSoundUrl}" />

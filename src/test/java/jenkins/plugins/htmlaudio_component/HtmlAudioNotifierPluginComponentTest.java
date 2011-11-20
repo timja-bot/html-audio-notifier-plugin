@@ -23,22 +23,26 @@ public class HtmlAudioNotifierPluginComponentTest extends HudsonTestCase {
         
         // value-set #1
         config.setEnabledByDefault(true);
+        config.setLongPollingEnabled(true);
         config.setSuccessSoundUrl("s");
         config.setSuccessAfterFailureSoundUrl("sf");
         config.setFailureSoundUrl("f");
         configRoundtrip();
         assertTrue(config.isEnabledByDefault());
+        assertTrue(config.isLongPollingEnabled());
         assertEquals("s", config.getSuccessSoundUrl());
         assertEquals("sf", config.getSuccessAfterFailureSoundUrl());
         assertEquals("f", config.getFailureSoundUrl());
         
         // value-set #2
         config.setEnabledByDefault(false);
+        config.setLongPollingEnabled(false);
         config.setSuccessSoundUrl(null);
         config.setSuccessAfterFailureSoundUrl(null);
         config.setFailureSoundUrl(null);
         configRoundtrip();
         assertFalse(config.isEnabledByDefault());
+        assertFalse(config.isLongPollingEnabled());
         assertEquals("", config.getSuccessSoundUrl());
         assertEquals("", config.getSuccessAfterFailureSoundUrl());
         assertEquals("", config.getFailureSoundUrl());
@@ -54,6 +58,7 @@ public class HtmlAudioNotifierPluginComponentTest extends HudsonTestCase {
         final PluginDescriptor config = getConfig();
         
         config.setEnabledByDefault(false);
+        config.setLongPollingEnabled(false);
         config.setSuccessSoundUrl(null);
         config.setSuccessAfterFailureSoundUrl(null);
         config.setFailureSoundUrl(null);
@@ -63,6 +68,7 @@ public class HtmlAudioNotifierPluginComponentTest extends HudsonTestCase {
             .getFormByName("config");
 
         ((HtmlCheckBoxInput)form.getInputByName("htmlAudioEnabledByDefault")).setChecked(true);
+        ((HtmlCheckBoxInput)form.getInputByName("htmlAudioLongPollingEnabled")).setChecked(true);
         ((HtmlTextInput)form.getInputByName("htmlAudioSuccessSoundUrl")).setValueAttribute("success");
         ((HtmlTextInput)form.getInputByName("htmlAudioSuccessAfterFailureSoundUrl")).setValueAttribute("successAfter");
         ((HtmlTextInput)form.getInputByName("htmlAudioFailureSoundUrl")).setValueAttribute("failure");
@@ -70,6 +76,7 @@ public class HtmlAudioNotifierPluginComponentTest extends HudsonTestCase {
         submit(form);
         
         assertTrue(config.isEnabledByDefault());
+        assertTrue(config.isLongPollingEnabled());
         assertEquals("success", config.getSuccessSoundUrl());
         assertEquals("successAfter", config.getSuccessAfterFailureSoundUrl());
         assertEquals("failure", config.getFailureSoundUrl());

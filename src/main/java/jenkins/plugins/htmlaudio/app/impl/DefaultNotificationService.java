@@ -1,5 +1,6 @@
 package jenkins.plugins.htmlaudio.app.impl;
 
+import static java.lang.Thread.currentThread;
 import static jenkins.plugins.htmlaudio.domain.BuildResult.toBuildResult;
 import hudson.Extension;
 import hudson.model.Result;
@@ -52,15 +53,34 @@ public final class DefaultNotificationService implements NotificationService {
     }
     
     
-    public NewNotificationsResult findNewNotifications(NotificationId previous) {
+    public NewNotificationsResult waitForNewNotifications(NotificationId previous, long timeoutMs) {
         cleanupService.removeExpired();
         
         final NotificationId lastNotificationIdBeforeQuery = repo.getLastNotificationId();
-        final List<Notification> notifications = repo.findNewerThan(previous);
+        final List<Notification> notifications = findNewerThanOrWait(previous, timeoutMs);
         
         return new NewNotificationsResult(
                 findLastNotficationId(lastNotificationIdBeforeQuery, notifications),
                 notifications);
+    }
+    
+    
+    private List<Notification> findNewerThanOrWait(NotificationId previous, long timeoutMs) {
+        synchronized (repo) {
+            final List<Notification> result = repo.findNewerThan(previous);
+            
+            if (!result.isEmpty() || timeoutMs <= 0) {
+                return result;
+            }
+            
+            try {
+                repo.wait(timeoutMs);
+            } catch (InterruptedException e) {
+                currentThread().interrupt();
+            }
+            
+            return repo.findNewerThan(previous);
+        }
     }
 
 
@@ -74,12 +94,12 @@ public final class DefaultNotificationService implements NotificationService {
     
     public void recordBuildCompletion(String buildDetails, Result result, Result previousResult) {
         cleanupService.removeExpired();
-        
+
         final String soundUrl = getSoundForResult(result, previousResult);
         if (soundUrl == null) {
             return;
         }
-        
+
         final Notification n = factory.createAndPersist(soundUrl, buildDetails);
         logger.info("created a new notification, " + n);
     }

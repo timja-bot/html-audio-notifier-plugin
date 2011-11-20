@@ -76,6 +76,7 @@ public final class HtmlAudioNotifierPlugin extends Plugin implements Describable
     public static final class PluginDescriptor extends Descriptor<HtmlAudioNotifierPlugin> {
         
         private volatile boolean enabledByDefault = false;
+        private volatile boolean longPollingEnabled = false;
         private volatile String successSoundUrl = "";
         private volatile String successAfterFailureSoundUrl = "pop.wav";
         private volatile String failureSoundUrl = "horse.wav";
@@ -95,6 +96,7 @@ public final class HtmlAudioNotifierPlugin extends Plugin implements Describable
         @Override
         public boolean configure(StaplerRequest req, JSONObject json) throws FormException { 
             enabledByDefault = json.getBoolean("htmlAudioEnabledByDefault");
+            longPollingEnabled = json.getBoolean("htmlAudioLongPollingEnabled");
             successSoundUrl = json.getString("htmlAudioSuccessSoundUrl");
             successAfterFailureSoundUrl = json.getString("htmlAudioSuccessAfterFailureSoundUrl");
             failureSoundUrl = json.getString("htmlAudioFailureSoundUrl");
@@ -106,10 +108,20 @@ public final class HtmlAudioNotifierPlugin extends Plugin implements Describable
         public boolean isEnabledByDefault() {
             return enabledByDefault;
         }
-        
+
         
         public void setEnabledByDefault(boolean enabledByDefault) {
             this.enabledByDefault = enabledByDefault;
+        }
+        
+        
+        public boolean isLongPollingEnabled() {
+            return longPollingEnabled;
+        }
+        
+        
+        public void setLongPollingEnabled(boolean longPollingEnabled) {
+            this.longPollingEnabled = longPollingEnabled;
         }
         
         

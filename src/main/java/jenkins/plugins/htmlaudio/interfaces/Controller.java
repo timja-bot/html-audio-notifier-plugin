@@ -1,5 +1,6 @@
 package jenkins.plugins.htmlaudio.interfaces;
 
+import static java.util.concurrent.TimeUnit.SECONDS;
 import static jenkins.plugins.htmlaudio.domain.NotificationId.parseNotificationId;
 import hudson.Extension;
 import hudson.model.RootAction;
@@ -30,6 +31,8 @@ import org.kohsuke.stapler.export.Flavor;
  */
 @Extension
 public final class Controller implements RootAction {
+    
+    private static final long LONG_POLLING_TIMEOUT = SECONDS.toMillis(45);
     
     private static final String CONTROLLER_URL = "/html-audio";
     
@@ -80,8 +83,11 @@ public final class Controller implements RootAction {
     
     
     private JSONObject findNext(String client, String previous) {
-        final NewNotificationsResult next = notificationService.findNewNotifications(
-                parseNotificationId(previous));
+        final boolean longPolling = configuration.isLongPollingEnabled();
+        
+        final NewNotificationsResult next = notificationService.waitForNewNotifications(
+            parseNotificationId(previous),
+            longPolling ? LONG_POLLING_TIMEOUT : 0);
      
         if (!next.getNotifications().isEmpty()) {
             logger.info("delivering " + next.getNotifications().size() + " event(s) to " + client
@@ -90,7 +96,8 @@ public final class Controller implements RootAction {
         
         return new JSONObject()
             .element("currentNotification", createCurrentNotificationObject(next.getLastNotificationId()))
-            .element("notifications", createNotificationsArray(next.getNotifications()));
+            .element("notifications", createNotificationsArray(next.getNotifications()))
+            .element("longPolling", longPolling);
     }
     
     

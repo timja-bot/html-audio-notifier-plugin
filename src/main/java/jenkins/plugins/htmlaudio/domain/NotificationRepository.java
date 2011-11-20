@@ -19,6 +19,9 @@ public interface NotificationRepository {
     /**
      * Returns each {@link Notification} that is newer than, i.e. happened after, a provided notification.
      * 
+     * <p>Clients waiting for new notifications are notified ({@link Object#notifyAll()}) when new
+     * notifications are available.</p>
+     * 
      * @param id a {@link NotificationId} or {@code null} to list each notification
      */
     List<Notification> findNewerThan(NotificationId id);

@@ -37,6 +37,15 @@ public class PluginConfigurationComponentTest extends HtmlAudioHudsonTestCase {
     }
     
     
+    public void test_long_polling_mirrors_descriptor_value() {
+        descriptor.setLongPollingEnabled(false);
+        assertFalse(configuration.isLongPollingEnabled());
+        
+        descriptor.setLongPollingEnabled(true);
+        assertTrue(configuration.isLongPollingEnabled());
+    }
+    
+    
     public void test_expected_URL_is_returned_for_each_result() {
         descriptor.setSuccessSoundUrl("success");
         descriptor.setFailureSoundUrl("failure");
