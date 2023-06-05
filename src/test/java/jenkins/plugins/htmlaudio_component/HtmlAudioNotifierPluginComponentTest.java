@@ -7,9 +7,9 @@ import org.junit.internal.runners.JUnit38ClassRunner;
 import org.junit.runner.RunWith;
 import org.jvnet.hudson.test.HudsonTestCase;
 
-import com.gargoylesoftware.htmlunit.html.HtmlCheckBoxInput;
-import com.gargoylesoftware.htmlunit.html.HtmlForm;
-import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
+import org.htmlunit.html.HtmlCheckBoxInput;
+import org.htmlunit.html.HtmlForm;
+import org.htmlunit.html.HtmlTextInput;
 
 
 /** 
@@ -69,9 +69,9 @@ public class HtmlAudioNotifierPluginComponentTest extends HudsonTestCase {
 
         ((HtmlCheckBoxInput)form.getInputByName("htmlAudioEnabledByDefault")).setChecked(true);
         ((HtmlCheckBoxInput)form.getInputByName("htmlAudioLongPollingEnabled")).setChecked(true);
-        ((HtmlTextInput)form.getInputByName("htmlAudioSuccessSoundUrl")).setValueAttribute("success");
-        ((HtmlTextInput)form.getInputByName("htmlAudioSuccessAfterFailureSoundUrl")).setValueAttribute("successAfter");
-        ((HtmlTextInput)form.getInputByName("htmlAudioFailureSoundUrl")).setValueAttribute("failure");
+        ((HtmlTextInput)form.getInputByName("htmlAudioSuccessSoundUrl")).setValue("success");
+        ((HtmlTextInput)form.getInputByName("htmlAudioSuccessAfterFailureSoundUrl")).setValue("successAfter");
+        ((HtmlTextInput)form.getInputByName("htmlAudioFailureSoundUrl")).setValue("failure");
         
         submit(form);
         
